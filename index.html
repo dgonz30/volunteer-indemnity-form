@@ -19,12 +19,9 @@
     #mainApp, #closedMessage { display: none; }
 
     .header { text-align: center; margin-bottom: 30px; }
-    .header img.logo { max-width: 160px; height: auto; margin-bottom: 20px; filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.1)); }
+    .header img.logo { max-width: 160px; height: auto; margin-bottom: 20px; filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.1)); display: none;}
     .header h1 { font-size: 32px; margin: 0 0 10px 0; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900;}
     .header p { color: #636e72; margin: 0; font-size: 18px; font-weight: 500;}
-    
-    .media-container { text-align: center; margin-bottom: 30px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; padding-bottom: 15px;}
-    .media-container video, .media-container iframe { width: 100%; height: auto; display: block; border: none; }
     
     #posterContainer { text-align: center; margin-bottom: 30px; display: none; }
     #posterContainer img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
@@ -64,7 +61,27 @@
     
     #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
     
-    @media (max-width: 600px) { .container { padding: 30px 20px; } .conduct-box { height: 350px; padding: 20px; } .media-container iframe {height: 250px;} }
+    /* Responsive 16:9 YouTube Style Video Wrapper */
+    .video-wrapper {
+      position: relative;
+      width: 100%;
+      padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
+      background: #000;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+      margin-top: 40px;
+    }
+    .video-wrapper iframe {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+    }
+
+    @media (max-width: 600px) { .container { padding: 30px 20px; } .conduct-box { height: 350px; padding: 20px; } }
   </style>
 </head>
 <body>
@@ -95,14 +112,6 @@
       <p>Volunteer Indemnity & Registration</p>
     </div>
 
-    <div class="media-container">
-      <video width="100%" height="auto" autoplay muted loop playsinline controls>
-        <source src="https://drive.google.com/uc?export=view&id=1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
-      <iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview" width="640" height="360" allow="autoplay" allowfullscreen></iframe>
-    </div>
-    
     <div id="posterContainer">
       <img id="posterImg" alt="Event Poster">
     </div>
@@ -193,10 +202,36 @@
       <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
       <div id="loader">INITIALIZING CONTRACT... PLEASE WAIT ⏳<br><span style="font-size:12px; color:#555;">Processing files & generating PDF securely...</span></div>
     </form>
+
+    <!-- PERFECT 16:9 RESPONSIVE VIDEO BELOW SUBMIT BUTTON -->
+    <div class="video-wrapper">
+      <iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview?autoplay=1&mute=1" allow="autoplay" allowfullscreen></iframe>
+    </div>
+
   </div>
 </div>
 
 <script>
+  // Elite Hack: Smart Image Loader Matrix
+  function secureLoadImage(imgElement, fileId) {
+    if (!fileId || fileId.trim() === "") return;
+    imgElement.style.display = 'inline-block';
+    
+    // Attempt 1: Direct CDN
+    imgElement.src = `https://lh3.googleusercontent.com/d/${fileId}`;
+    
+    imgElement.onerror = function() {
+      // Attempt 2: Google Thumbnail Bypass
+      this.onerror = function() {
+        // Attempt 3: WSRV Free SSL Proxy (Strips Google CORS headers completely)
+        this.onerror = null;
+        this.src = `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}`;
+      };
+      this.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
+    };
+  }
+
+  // 1. Fetch Admin Configuration
   window.onload = function() {
     fetch(WEB_APP_URL)
       .then(response => response.json())
@@ -205,11 +240,14 @@
         
         if (data.status === "OPEN") {
           document.getElementById('mainApp').style.display = 'block';
-          if(data.logo) document.getElementById('logoImg').src = data.logo;
-          if(data.poster) {
-            document.getElementById('posterImg').src = data.poster;
+          
+          if(data.logoId) secureLoadImage(document.getElementById('logoImg'), data.logoId);
+          
+          if(data.posterId) {
             document.getElementById('posterContainer').style.display = 'block';
+            secureLoadImage(document.getElementById('posterImg'), data.posterId);
           }
+          
           resizeCanvas();
         } else {
           document.getElementById('closedMessage').style.display = 'block';
@@ -220,6 +258,7 @@
       });
   };
 
+  // 2. Signature Canvas Matrix
   const canvas = document.getElementById('sigCanvas');
   const ctx = canvas.getContext('2d');
   let drawing = false;
@@ -252,6 +291,7 @@
   canvas.addEventListener('touchstart', startPos, {passive: false}); canvas.addEventListener('touchend', endPos); canvas.addEventListener('touchmove', draw, {passive: false});
   function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
 
+  // 3. API Dispatcher (CORS Bypass)
   function dispatchToServer(payload, timeOfSubmission) {
     fetch(WEB_APP_URL, {
       method: "POST",
@@ -286,6 +326,7 @@
     });
   }
 
+  // 4. Client-Side Image Crushing Interceptor
   document.getElementById('regForm').addEventListener('submit', function(e) {
     e.preventDefault(); 
     
