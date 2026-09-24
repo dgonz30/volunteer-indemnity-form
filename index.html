@@ -270,12 +270,7 @@
             const posterUrl = getUnblockableImageUrl(data.posterId);
             document.getElementById('posterContainer').style.display = 'block';
             document.getElementById('posterImg').src = posterUrl;
-            
-            // Instantly slaps the poster onto the video so the black box never appears
-            const videoElement = document.getElementById('promoVideo');
-            if (videoElement) {
-              videoElement.setAttribute('poster', posterUrl);
-            }
+            // Removed the script that was overriding the video thumbnail with the poster.
           }
           
           resizeCanvas();
