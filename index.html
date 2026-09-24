@@ -61,18 +61,42 @@
     
     #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
 
-    /* Unbreakable Video Injection Architecture */
+    /* ELITE ADAPTIVE VIDEO ARCHITECTURE */
     .video-container {
       position: relative;
       width: 100%;
-      padding-bottom: 56.25%; /* Mathematical 16:9 Aspect Ratio */
+      /* Modern 16:9 constraint prevents mobile collapse */
+      aspect-ratio: 16 / 9;
+      min-height: 250px; 
+      background: #000;
       border-radius: 12px;
       overflow: hidden;
-      background: #111; /* Sleek dark background while loading */
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       margin-top: 40px;
-      cursor: pointer;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+    
+    /* Legacy fallback for older iOS/Android that don't support aspect-ratio */
+    @supports not (aspect-ratio: 16 / 9) {
+      .video-container {
+        padding-bottom: 56.25%;
+        height: 0;
+      }
+    }
+
+    .video-container iframe {
+      position: absolute !important;
+      top: 0 !important;
+      left: 0 !important;
+      width: 100% !important;
+      height: 100% !important;
+      border: none !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+
     .custom-play-btn {
       position: absolute;
       top: 50%;
@@ -87,7 +111,7 @@
       align-items: center;
       z-index: 10;
       transition: all 0.3s ease;
-      pointer-events: none;
+      cursor: pointer;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .custom-play-btn svg {
@@ -96,7 +120,7 @@
       height: 40px;
       margin-left: 5px;
     }
-    .video-container:hover .custom-play-btn {
+    .custom-play-btn:hover {
       background: rgba(255,204,0,0.95);
       transform: translate(-50%, -50%) scale(1.1);
     }
@@ -112,8 +136,19 @@
       font-size: 14px;
       pointer-events: none;
     }
-    
-    @media (max-width: 600px) { .container { padding: 30px 20px; } .conduct-box { height: 350px; padding: 20px; } }
+
+    /* Hardware orientation adaptions */
+    @media (orientation: landscape) and (max-height: 600px) {
+      .video-container {
+        max-width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+      }
+    }
+    @media (max-width: 600px) { 
+      .container { padding: 30px 20px; } 
+      .conduct-box { height: 350px; padding: 20px; } 
+    }
   </style>
 </head>
 <body>
@@ -145,7 +180,6 @@
       <p>Volunteer Indemnity & Registration</p>
     </div>
 
-    <!-- Standalone Poster at the Top -->
     <div id="posterContainer">
       <img id="posterImg" alt="Event Poster">
     </div>
@@ -237,20 +271,18 @@
       <div id="loader">INITIALIZING CONTRACT... PLEASE WAIT ⏳<br><span style="font-size:12px; color:#555;">Processing files & generating PDF securely...</span></div>
     </form>
 
-    <!-- PERFECT 16:9 DYNAMIC IFRAME INJECTION CONTAINER -->
+    <!-- DEVICE-ADAPTIVE DYNAMIC IFRAME INJECTION CONTAINER -->
     <div class="video-container" id="vidContainer">
       <div class="custom-play-btn" id="playBtnOverlay">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </div>
       <div class="trailer-text" id="trailerText">Event Trailer</div>
-      <!-- Iframe will be injected here upon interaction -->
     </div>
 
   </div>
 </div>
 
 <script>
-  // Elite Hack: Secure Proxy Router completely immune to Google CORS blocks
   function getUnblockableImageUrl(fileId) {
     return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}`;
   }
@@ -287,7 +319,7 @@
   };
 
   // ---------------------------------------------------------
-  // THE DYNAMIC IFRAME INJECTION: Auto-Play Bypass
+  // FLUID IFRAME INJECTION: Auto-Play Bypass & Form Factor Fix
   // ---------------------------------------------------------
   let videoStarted = false;
 
@@ -297,16 +329,21 @@
     
     const vidContainer = document.getElementById('vidContainer');
     if(vidContainer) {
-      // By injecting the official Google Drive preview iframe natively with autoplay=1 AFTER an interaction, 
-      // it bypasses browser security and guarantees HD playback without a black box.
-      vidContainer.innerHTML = '<iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview?autoplay=1" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allow="autoplay" allowfullscreen></iframe>';
+      // Injects native iframe equipped with responsive allowfullscreen parameters
+      vidContainer.innerHTML = '<iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>';
     }
   }
 
-  // Bind the trigger to absolutely any interaction with the document
+  // Tripwires attached directly to user intent (click, type, interact)
   document.body.addEventListener('click', triggerVideoPlay, { once: true });
   document.body.addEventListener('keydown', triggerVideoPlay, { once: true });
   document.body.addEventListener('touchstart', triggerVideoPlay, { once: true });
+
+  // Fallback direct click on the button itself
+  const playOverlay = document.getElementById('playBtnOverlay');
+  if(playOverlay) {
+    playOverlay.addEventListener('click', triggerVideoPlay);
+  }
 
   // 2. Signature Canvas Matrix
   const canvas = document.getElementById('sigCanvas');
