@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Soul'd Out for Jesus - Registration</title>
+  <style>
+    :root { --primary: #8b0000; --secondary: #ffcc00; --accent: #33ccff; --bg: #f4f6f8; --text: #2d3436; --border: #dcdde1; }
+    * { box-sizing: border-box; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px 15px; font-size: 16px; line-height: 1.6; }
+    
+    .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 40px 30px; border-radius: 16px; border-top: 8px solid var(--primary); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
+    
+    #initLoader { text-align: center; padding: 50px; }
+    #initLoader p { font-size: 18px; color: var(--primary); font-weight: bold; margin-top: 15px; }
+    .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+    #mainApp, #closedMessage { display: none; }
+
+    .header { text-align: center; margin-bottom: 30px; }
+    .header img.logo { max-width: 160px; height: auto; margin-bottom: 20px; filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.1)); }
+    .header h1 { font-size: 32px; margin: 0 0 10px 0; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900;}
+    .header p { color: #636e72; margin: 0; font-size: 18px; font-weight: 500;}
+    
+    .media-container { text-align: center; margin-bottom: 30px; background: #000; border-radius: 12px; overflow: hidden; box-shadow: 0 8px 25px rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 15px; padding-bottom: 15px;}
+    .media-container video, .media-container iframe { width: 100%; height: auto; display: block; border: none; }
+    
+    #posterContainer { text-align: center; margin-bottom: 30px; display: none; }
+    #posterContainer img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    
+    .conduct-box { height: 400px; overflow-y: auto; background: #fafbfc; padding: 30px; border: 1px solid var(--border); border-left: 5px solid var(--secondary); border-radius: 12px; margin-bottom: 40px; font-size: 15px; color: #4b4b4b; box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);}
+    .conduct-box h3 { color: var(--primary); margin-top: 25px; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 8px; text-transform: uppercase;}
+    .conduct-box h3:first-child { margin-top: 0; }
+    .conduct-box ul { margin-top: 10px; padding-left: 25px; }
+    .conduct-box strong { color: #2d3436; font-size: 16px; display: inline-block; margin-top: 15px; margin-bottom: 5px;}
+    
+    .form-section-title { font-size: 22px; color: var(--text); border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 25px; display: inline-block; }
+    
+    .form-row { display: flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap; }
+    .form-group { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
+    .form-group.full-width { width: 100%; margin-bottom: 25px; }
+    
+    label { font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; color: var(--primary);}
+    input[type="text"], input[type="email"], input[type="date"], input[type="number"], input[type="file"] { padding: 16px 20px; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #fdfdfd; width: 100%; color: var(--text); font-family: inherit;}
+    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(51, 204, 255, 0.15); background: #fff;}
+    input[type="file"] { padding: 12px; background: #fff; cursor: pointer; }
+    
+    .sig-container { position: relative; width: 100%; margin-bottom: 10px;}
+    canvas { border: 2px dashed var(--border); border-radius: 12px; cursor: crosshair; width: 100%; height: 220px; background: #fff; touch-action: none; transition: border-color 0.3s; }
+    canvas:hover { border-color: var(--accent); }
+    
+    .btn-clear { position: absolute; top: -35px; right: 0; background: rgba(139,0,0,0.1); color: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s;}
+    .btn-clear:hover { background: var(--primary); color: #fff;}
+    
+    .btn-submit { background: var(--primary); color: white; padding: 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 800; width: 100%; margin-top: 30px; text-transform: uppercase; letter-spacing: 1.5px; transition: background 0.3s, transform 0.1s; box-shadow: 0 6px 12px rgba(139,0,0,0.2);}
+    .btn-submit:hover:not(:disabled) { background: #660000; }
+    .btn-submit:active:not(:disabled) { transform: scale(0.98); }
+    .btn-submit:disabled { background: #7f8c8d; cursor: not-allowed; box-shadow: none; }
+    
+    .consent-wrapper { display: flex; align-items: flex-start; gap: 15px; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;}
+    .consent-wrapper input { margin-top: 5px; width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer;}
+    .consent-wrapper label { font-weight: 500; font-size: 15px; color: #4b4b4b; cursor: pointer; line-height: 1.5;}
+    
+    #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
+    
+    @media (max-width: 600px) { .container { padding: 30px 20px; } .conduct-box { height: 350px; padding: 20px; } .media-container iframe {height: 250px;} }
+  </style>
+</head>
+<body>
+
+<script>
+  // ==========================================
+  // PASTE YOUR DEPLOYED WEB APP URL HERE:
+  // ==========================================
+  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw3fDYOwd6LsJkIQOvpYSknCaVI16DzVpDWbBvbRw7EmcehUcmqg2vLSQZXk-1xyDEtug/exec"; 
+</script>
+
+<div class="container">
+  
+  <div id="initLoader">
+    <div class="spinner"></div>
+    <p>Loading Secure Gateway...</p>
+  </div>
+
+  <div id="closedMessage" style="text-align:center; padding: 60px 20px;">
+    <h2 style="color:#8b0000; font-size:26px; font-weight:900; text-transform:uppercase;">Event Closed</h2>
+    <p style="color:#636e72; font-size:18px;">There are no upcoming events to sign up for at this time.</p>
+  </div>
+
+  <div id="mainApp">
+    <div class="header">
+      <img id="logoImg" class="logo" alt="Soul'd Out Logo">
+      <h1>Soul'd Out for Jesus</h1>
+      <p>Volunteer Indemnity & Registration</p>
+    </div>
+
+    <div class="media-container">
+      <video width="100%" height="auto" autoplay muted loop playsinline controls>
+        <source src="https://drive.google.com/uc?export=view&id=1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+      <iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview" width="640" height="360" allow="autoplay" allowfullscreen></iframe>
+    </div>
+    
+    <div id="posterContainer">
+      <img id="posterImg" alt="Event Poster">
+    </div>
+    
+    <div class="conduct-box">
+      <h3>Objectives of the Organization</h3>
+      <strong>Mission</strong><br>
+      Soul'd Out for Jesus Ministries Inc. is committed:
+      <ul>
+        <li>To spread hope and love through the gospel of Jesus Christ, among the unheard and least valued sectors of the society- the poor, the oppressed and the rejected.</li>
+        <li>To support them morally, emotionally and spiritually, as we believe that they, too, are God's children.</li>
+      </ul>
+
+      <strong>Vision</strong><br>
+      Soul'd Out for Jesus Ministries Inc. envisions itself as a community of active social carers driven by the Great Commission of Jesus Christ in Matthew 28:19-20; reaching out to youth, young adults and families, encouraging them and equipping them.<br>
+
+      <strong>Core Values</strong>
+      <ul>
+        <li>Molding Lives - We lead the young people of today to become resilient citizens of tomorrow.</li>
+        <li>Equipping Lives - We develop programs to equip the community to better care for those in need.</li>
+        <li>Enriching Lives - We help people find direction and purpose in life and their relationships.</li>
+        <li>Touching Lives - We extend helping hands to those who want to reach their fullest potential.</li>
+        <li>Sharing Jesus - Most especially, we share the message of Jesus' Love to all the individuals that we shall interact with.</li>
+      </ul>
+
+      <h3>Personal Conduct</h3>
+      <strong>Dress Code</strong><br>
+      Volunteers are responsible for presenting a positive example to partners, clients and the community. Volunteers shall dress appropriately in public and at work, always keeping in mind the cultural norms and practices of the community. As a rule of thumb, all volunteers should be attired modestly as far as the nature of the voluntary work allows, and refrain from clothing with offensive or objectional material.<br>
+
+      <strong>Personal and Public Communication</strong><br>
+      Volunteers shall exercise discretion in any personal communication regarding their assignment or other related persons and issues. Volunteers shall exercise extreme discretion in posting personal comments about projects, project partners, clients or the community on new media and social media platforms such as weblogs (or blog), podcasts, Facebook, Twitter, etc. Offensive or unwarranted negative comments may result in disciplinary action. Volunteers shall contact the organization if they require advice on such communication.<br>
+
+      <strong>Personal behaviour</strong><br>
+      All relationships with beneficiaries shall be on a professional basis. Volunteers to avoid inappropriate physical or sexual relationships with other volunteers, staff and beneficiaries. At no time may volunteers engage in sexual activity with any beneficiaries or with a child (a person under the age of 18 regardless of the legal age of consent).<br>
+
+      <strong>Unlawful Behavior</strong><br>
+      Soul'd Out for Jesus Ministries Inc. will not condone any conduct or pattern of behavior or any criminal behavior, which may or may not incur risk of injury, physical harm to self or others or presents a substantial possibility of loss or destruction of property. This will result in termination of the volunteers' involvement with the organization.<br>
+
+      <h3>Professional Conduct</h3>
+      <strong>Collaboration and communication</strong><br>
+      Volunteers should maintain cordial relationships and collaborate with staff, other volunteers and beneficiaries with the highest standards of professional courtesy. Volunteers should communicate sensitively and in ways appropriate to existing cultural norms.<br>
+
+      <strong>Decorum</strong><br>
+      Volunteers should exercise care in their language, gestures and attitudes, ensuring that they do not act in such a manner that is harmful to others. The use of abusive language or calling of offensive names or making of inappropriate remarks is strictly prohibited as is intimate or inappropriate physical contact. Volunteers must uphold respect for privacy. Volunteers should not take photos or make recordings of any kind during the volunteering session. They should not request or exchange personal details or contact information with beneficiaries. Volunteers must ensure safety to oneself and to others at all times. Volunteers must not smoke, use or be in possession, or be under the influence of alcohol or non-prescriptive drugs at any time while serving the community.<br>
+
+      <strong>Conflict of Interest</strong><br>
+      Volunteers should avoid any personal, financial, conflict or other interests that might hinder their capability or willingness to perform their assigned duties. Volunteers are expected to avoid situations which may have conflict of interest with the organisation (e.g. other commitments, roles in other organisations). If any potential area of conflict arises, please consult with your supervisor and/or the Administration Manager.<br>
+
+      <strong>Punctuality and Absenteeism</strong><br>
+      Volunteers are expected to perform their duties punctually and as assigned. When expecting to be absent from scheduled duty, volunteers shall inform the organizers as far in advance as possible so that alternative arrangements may be made.<br>
+
+      <strong>Confidentiality</strong><br>
+      Volunteers are expected to maintain the confidentiality of all proprietary or privileged or personal information to which they are exposed while serving as volunteers, whether this information involves a single member of staff, volunteers, beneficiary, or other person or involving the activities of Soul'd Out of Jesus Ministries Inc.<br>
+
+      <strong>Volunteer Exclusivity</strong><br>
+      No volunteers are designated as exclusive to Soul'd Out for Jesus Ministries Inc. or its related activities. Each volunteer has the freedom to participate based on their own choice. Therefore, any volunteer is free to engage in activities with other organizations, as long as the actions outside of Soul'd Out for Jesus Ministries Inc. do not hold the organization accountable.
+    </div>
+
+    <div class="form-section-title">Registration Form</div>
+
+    <form id="regForm">
+      <div class="form-group full-width"><label>Full Legal Name</label><input type="text" id="name" placeholder="Enter your full name" required></div>
+      <div class="form-group full-width"><label>Complete Address</label><input type="text" id="address" placeholder="Street, City, Province" required></div>
+      
+      <div class="form-row">
+        <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com" required></div>
+        <div class="form-group"><label>Phone Number</label><input type="text" id="phone" placeholder="+63 900 000 0000" required></div>
+      </div>
+      
+      <div class="form-row">
+        <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
+        <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="e.g. 25" required></div>
+      </div>
+      
+      <div class="form-group full-width"><label>Upload Valid ID</label><input type="file" id="idFile" accept="image/*,.pdf" required></div>
+      
+      <div class="form-group full-width sig-container">
+        <label>Digital Signature (Draw Here)</label>
+        <button type="button" class="btn-clear" onclick="clearCanvas()">Clear Signature</button>
+        <canvas id="sigCanvas"></canvas>
+      </div>
+      
+      <div class="consent-wrapper">
+        <input type="checkbox" id="consent" required>
+        <label for="consent">I have read the complete Volunteer Code of Conduct above. I fully understand and agree that the personal information provided will be used for program-related communication.</label>
+      </div>
+      
+      <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
+      <div id="loader">INITIALIZING CONTRACT... PLEASE WAIT ⏳<br><span style="font-size:12px; color:#555;">Processing files & generating PDF securely...</span></div>
+    </form>
+  </div>
+</div>
+
+<script>
+  window.onload = function() {
+    fetch(WEB_APP_URL)
+      .then(response => response.json())
+      .then(data => {
+        document.getElementById('initLoader').style.display = 'none';
+        
+        if (data.status === "OPEN") {
+          document.getElementById('mainApp').style.display = 'block';
+          if(data.logo) document.getElementById('logoImg').src = data.logo;
+          if(data.poster) {
+            document.getElementById('posterImg').src = data.poster;
+            document.getElementById('posterContainer').style.display = 'block';
+          }
+          resizeCanvas();
+        } else {
+          document.getElementById('closedMessage').style.display = 'block';
+        }
+      })
+      .catch(error => {
+        alert("Gateway Connection Failed. Verify the WEB_APP_URL is pasted correctly.");
+      });
+  };
+
+  const canvas = document.getElementById('sigCanvas');
+  const ctx = canvas.getContext('2d');
+  let drawing = false;
+
+  function resizeCanvas() {
+    if(!canvas.parentElement) return;
+    canvas.width = canvas.parentElement.getBoundingClientRect().width;
+    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#2d3436';
+  }
+  window.addEventListener('resize', resizeCanvas);
+
+  function getPos(e) {
+    const rect = canvas.getBoundingClientRect();
+    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
+    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
+    return { x: clientX - rect.left, y: clientY - rect.top };
+  }
+
+  function startPos(e) { if(e.cancelable) e.preventDefault(); drawing = true; draw(e); }
+  function endPos() { drawing = false; ctx.beginPath(); }
+  function draw(e) {
+    if (!drawing) return;
+    if(e.cancelable) e.preventDefault();
+    const pos = getPos(e);
+    ctx.lineTo(pos.x, pos.y); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
+  }
+
+  canvas.addEventListener('mousedown', startPos); canvas.addEventListener('mouseup', endPos); canvas.addEventListener('mousemove', draw);
+  canvas.addEventListener('touchstart', startPos, {passive: false}); canvas.addEventListener('touchend', endPos); canvas.addEventListener('touchmove', draw, {passive: false});
+  function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
+
+  function dispatchToServer(payload, timeOfSubmission) {
+    fetch(WEB_APP_URL, {
+      method: "POST",
+      body: JSON.stringify(payload),
+      headers: { "Content-Type": "text/plain;charset=utf-8" } 
+    })
+    .then(response => response.json())
+    .then(res => {
+      if(res.success) {
+        const elapsed = Date.now() - timeOfSubmission;
+        const timeRemaining = Math.max(0, 5000 - elapsed); 
+        
+        setTimeout(function() {
+          document.querySelector('.container').innerHTML = `
+            <div style="text-align:center; padding: 60px 20px;">
+              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 25px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+              <h2 style="color:#27ae60; font-size: 20px; font-weight: 900; line-height: 1.5; text-transform: uppercase;">Thank you for volunteering with us, a copy of your contract will be sent to your registered email, you may now close this window,, see you on the day of the event.</h2>
+            </div>`;
+        }, timeRemaining);
+      } else {
+        alert("System Error: " + res.error);
+        document.getElementById('submitBtn').disabled = false;
+        document.getElementById('submitBtn').innerText = "Submit Application";
+        document.getElementById('loader').style.display = 'none';
+      }
+    })
+    .catch(error => {
+      alert("Network Error: " + error);
+      document.getElementById('submitBtn').disabled = false;
+      document.getElementById('submitBtn').innerText = "Submit Application";
+      document.getElementById('loader').style.display = 'none';
+    });
+  }
+
+  document.getElementById('regForm').addEventListener('submit', function(e) {
+    e.preventDefault(); 
+    
+    const blank = document.createElement('canvas');
+    blank.width = canvas.width; blank.height = canvas.height;
+    if (canvas.toDataURL() === blank.toDataURL()) return alert("Please draw your signature in the box provided.");
+
+    const submitBtn = document.getElementById('submitBtn');
+    submitBtn.disabled = true;
+    submitBtn.innerText = "INITIALIZING CONTRACT... PLEASE WAIT ⏳";
+    document.getElementById('loader').style.display = 'block';
+
+    const timeOfSubmission = Date.now();
+    const fileInput = document.getElementById('idFile').files[0];
+    
+    const payload = {
+      name: document.getElementById('name').value, address: document.getElementById('address').value,
+      email: document.getElementById('email').value, phone: document.getElementById('phone').value,
+      dob: document.getElementById('dob').value, age: document.getElementById('age').value,
+      consent: document.getElementById('consent').checked ? "Yes" : "No",
+      signature: canvas.toDataURL("image/png")
+    };
+
+    if (fileInput.type.startsWith('image/')) {
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        const img = new Image();
+        img.onload = function() {
+          const cvs = document.createElement('canvas');
+          const maxW = 800;
+          let w = img.width, h = img.height;
+          if(w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
+          cvs.width = w; cvs.height = h;
+          cvs.getContext('2d').drawImage(img, 0, 0, w, h);
+          payload.idData = cvs.toDataURL('image/jpeg', 0.5);
+          dispatchToServer(payload, timeOfSubmission);
+        };
+        img.src = evt.target.result;
+      };
+      reader.readAsDataURL(fileInput);
+    } else {
+      if (fileInput.size > 2 * 1024 * 1024) {
+        alert("The PDF is too large (max 2MB). Please upload a smaller file or an image.");
+        submitBtn.disabled = false;
+        submitBtn.innerText = "Submit Application";
+        document.getElementById('loader').style.display = 'none';
+        return;
+      }
+      const reader = new FileReader();
+      reader.onload = function(evt) {
+        payload.idData = evt.target.result;
+        dispatchToServer(payload, timeOfSubmission);
+      };
+      reader.readAsDataURL(fileInput);
+    }
+  });
+</script>
+</body>
+</html>
