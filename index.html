@@ -5,20 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
   <title>Soul'd Out for Jesus - Registration</title>
   <style>
-    :root { 
-      --primary: #8b0000; 
-      --secondary: #ffcc00; 
-      --accent: #33ccff; 
-      --bg: #f4f6f8; 
-      --text: #2d3436; 
-      --border: #dcdde1; 
-    }
+    :root { --primary: #8b0000; --secondary: #ffcc00; --accent: #33ccff; --bg: #f4f6f8; --text: #2d3436; --border: #dcdde1; }
     * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px 15px; font-size: 16px; line-height: 1.6; }
+    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px 15px; font-size: 16px; line-height: 1.6; }
     
     .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 40px 30px; border-radius: 16px; border-top: 8px solid var(--primary); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
     
-    /* Initialization Loader */
     #initLoader { text-align: center; padding: 50px; }
     #initLoader p { font-size: 18px; color: var(--primary); font-weight: bold; margin-top: 15px; }
     .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
@@ -69,7 +61,7 @@
     
     #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
 
-    /* Elite Video Player UI - Replaces the Black Box */
+    /* Advanced Video Player Architecture */
     .video-container {
       position: relative;
       width: 100%;
@@ -94,24 +86,24 @@
       transform: translate(-50%, -50%);
       width: 80px;
       height: 80px;
-      background: rgba(139,0,0,0.85); /* Deep Red */
+      background: rgba(139,0,0,0.85);
       border-radius: 50%;
       display: flex;
       justify-content: center;
       align-items: center;
       z-index: 10;
       transition: all 0.3s ease;
-      pointer-events: none; /* Allows clicks to pass through to the video */
+      pointer-events: none;
       box-shadow: 0 4px 15px rgba(0,0,0,0.3);
     }
     .custom-play-btn svg {
       fill: #fff;
       width: 40px;
       height: 40px;
-      margin-left: 5px; /* Optically center the play triangle */
+      margin-left: 5px;
     }
     .video-container:hover .custom-play-btn {
-      background: rgba(255,204,0,0.95); /* Golden Yellow Hover */
+      background: rgba(255,204,0,0.95);
       transform: translate(-50%, -50%) scale(1.1);
     }
     
@@ -124,7 +116,7 @@
   // ==========================================
   // PASTE YOUR DEPLOYED WEB APP URL HERE:
   // ==========================================
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw3fDYOwd6LsJkIQOvpYSknCaVI16DzVpDWbBvbRw7EmcehUcmqg2vLSQZXk-1xyDEtug/exec"; 
+  const WEB_APP_URL = "YOUR_WEB_APP_URL_HERE"; 
 </script>
 
 <div class="container">
@@ -140,12 +132,13 @@
   </div>
 
   <div id="mainApp">
+    <!-- Decoupled Image Rendering Area -->
     <div class="header">
       <img id="logoImg" class="logo" alt="Soul'd Out Logo">
       <h1>Soul'd Out for Jesus</h1>
       <p>Volunteer Indemnity & Registration</p>
     </div>
-    
+
     <div id="posterContainer">
       <img id="posterImg" alt="Event Poster">
     </div>
@@ -239,11 +232,9 @@
 
     <!-- PERFECT 16:9 RESPONSIVE VIDEO BELOW SUBMIT BUTTON -->
     <div class="video-container" id="vidContainer">
-      <!-- Custom Play Button Overlay to prevent the black box look -->
       <div class="custom-play-btn" id="playBtnOverlay">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </div>
-      <!-- Native HTML5 Player: Preloads metadata to cure the black screen -->
       <video id="promoVideo" width="100%" height="auto" controls playsinline preload="metadata">
         <source src="https://drive.google.com/uc?export=download&id=1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb" type="video/mp4">
         Your browser does not support the video tag.
@@ -254,26 +245,12 @@
 </div>
 
 <script>
-  // Elite Hack: Smart Image Loader Matrix to Bypass Google's COEP Restrictions
-  function secureLoadImage(imgElement, fileId) {
-    if (!fileId || fileId.trim() === "") return;
-    imgElement.style.display = 'inline-block';
-    
-    // Attempt 1: Native Stream
-    imgElement.src = `https://lh3.googleusercontent.com/d/${fileId}`;
-    
-    imgElement.onerror = function() {
-      // Attempt 2: Thumbnail API
-      this.onerror = function() {
-        // Attempt 3: Dark Web Proxy to Strip Security Headers
-        this.onerror = null;
-        this.src = `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}`;
-      };
-      this.src = `https://drive.google.com/thumbnail?id=${fileId}&sz=w1000`;
-    };
+  // Elite Hack: Secure Proxy Router completely immune to Google CORS blocks
+  function getUnblockableImageUrl(fileId) {
+    return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}`;
   }
 
-  // 1. Fetch Admin Configuration
+  // 1. Fetch Configuration & Decoupled Images
   window.onload = function() {
     fetch(WEB_APP_URL)
       .then(response => response.json())
@@ -283,20 +260,21 @@
         if (data.status === "OPEN") {
           document.getElementById('mainApp').style.display = 'block';
           
-          if(data.logo) {
+          if(data.logoId) {
             const logoEl = document.getElementById('logoImg');
-            logoEl.src = data.logo;
+            logoEl.src = getUnblockableImageUrl(data.logoId);
             logoEl.style.display = 'inline-block';
           }
           
-          if(data.poster) {
+          if(data.posterId) {
+            const posterUrl = getUnblockableImageUrl(data.posterId);
             document.getElementById('posterContainer').style.display = 'block';
-            document.getElementById('posterImg').src = data.poster;
+            document.getElementById('posterImg').src = posterUrl;
             
-            // INJECT POSTER AS VIDEO THUMBNAIL TO PREVENT BLACK BOX
+            // Instantly slaps the poster onto the video so the black box never appears
             const videoElement = document.getElementById('promoVideo');
             if (videoElement) {
-              videoElement.setAttribute('poster', data.poster);
+              videoElement.setAttribute('poster', posterUrl);
             }
           }
           
@@ -311,33 +289,29 @@
   };
 
   // ---------------------------------------------------------
-  // THE DARK WEB INTERACTION HIJACK: Auto-Play & Unmute
+  // THE OMNIPRESENT INTERACTION HIJACK: Auto-Play & Unmute
   // ---------------------------------------------------------
   const promoVideo = document.getElementById('promoVideo');
   const playBtnOverlay = document.getElementById('playBtnOverlay');
+  let videoStarted = false;
 
   function triggerVideoPlay() {
-    if(promoVideo) {
-      promoVideo.muted = false; // Force unmute
-      const playPromise = promoVideo.play();
-      
-      if (playPromise !== undefined) {
-        playPromise.then(_ => {
-          // Playback successfully hijacked and started
-          if(playBtnOverlay) playBtnOverlay.style.display = 'none';
-        }).catch(error => {
-          // Awaiting manual play interaction
-        });
-      }
-    }
+    if(videoStarted || !promoVideo) return;
+    videoStarted = true;
     
-    // Disconnect tripwire
-    document.body.removeEventListener('click', triggerVideoPlay);
-    document.body.removeEventListener('keydown', triggerVideoPlay);
-    document.body.removeEventListener('touchstart', triggerVideoPlay);
+    promoVideo.muted = false; // Force unmute
+    const playPromise = promoVideo.play();
+    
+    if (playPromise !== undefined) {
+      playPromise.then(_ => {
+        if(playBtnOverlay) playBtnOverlay.style.display = 'none';
+      }).catch(error => {
+        videoStarted = false; // Awaiting explicit user click
+      });
+    }
   }
 
-  // Set the invisible tripwires on the entire page
+  // Bind the trigger to absolutely any interaction with the document
   document.body.addEventListener('click', triggerVideoPlay, { once: true });
   document.body.addEventListener('keydown', triggerVideoPlay, { once: true });
   document.body.addEventListener('touchstart', triggerVideoPlay, { once: true });
@@ -346,6 +320,7 @@
   if(promoVideo) {
     promoVideo.addEventListener('play', function() {
       if(playBtnOverlay) playBtnOverlay.style.display = 'none';
+      videoStarted = true;
     });
   }
 
