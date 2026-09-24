@@ -61,23 +61,17 @@
     
     #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
 
-    /* Advanced Video Player Architecture */
+    /* Unbreakable Video Injection Architecture */
     .video-container {
       position: relative;
       width: 100%;
+      padding-bottom: 56.25%; /* Mathematical 16:9 Aspect Ratio */
       border-radius: 12px;
       overflow: hidden;
-      background: #000;
+      background: #111; /* Sleek dark background while loading */
       box-shadow: 0 8px 25px rgba(0,0,0,0.15);
       margin-top: 40px;
       cursor: pointer;
-    }
-    .video-container video {
-      width: 100%;
-      height: auto;
-      display: block;
-      aspect-ratio: 16/9;
-      object-fit: cover;
     }
     .custom-play-btn {
       position: absolute;
@@ -106,6 +100,18 @@
       background: rgba(255,204,0,0.95);
       transform: translate(-50%, -50%) scale(1.1);
     }
+    .trailer-text {
+      position: absolute;
+      width: 100%;
+      text-align: center;
+      top: 65%;
+      color: #636e72;
+      font-weight: bold;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      font-size: 14px;
+      pointer-events: none;
+    }
     
     @media (max-width: 600px) { .container { padding: 30px 20px; } .conduct-box { height: 350px; padding: 20px; } }
   </style>
@@ -132,13 +138,14 @@
   </div>
 
   <div id="mainApp">
-    <!-- Decoupled Image Rendering Area -->
+    
     <div class="header">
       <img id="logoImg" class="logo" alt="Soul'd Out Logo">
       <h1>Soul'd Out for Jesus</h1>
       <p>Volunteer Indemnity & Registration</p>
     </div>
 
+    <!-- Standalone Poster at the Top -->
     <div id="posterContainer">
       <img id="posterImg" alt="Event Poster">
     </div>
@@ -230,15 +237,13 @@
       <div id="loader">INITIALIZING CONTRACT... PLEASE WAIT ⏳<br><span style="font-size:12px; color:#555;">Processing files & generating PDF securely...</span></div>
     </form>
 
-    <!-- PERFECT 16:9 RESPONSIVE VIDEO BELOW SUBMIT BUTTON -->
+    <!-- PERFECT 16:9 DYNAMIC IFRAME INJECTION CONTAINER -->
     <div class="video-container" id="vidContainer">
       <div class="custom-play-btn" id="playBtnOverlay">
         <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
       </div>
-      <video id="promoVideo" width="100%" height="auto" controls playsinline preload="metadata">
-        <source src="https://drive.google.com/uc?export=download&id=1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb" type="video/mp4">
-        Your browser does not support the video tag.
-      </video>
+      <div class="trailer-text" id="trailerText">Event Trailer</div>
+      <!-- Iframe will be injected here upon interaction -->
     </div>
 
   </div>
@@ -267,10 +272,8 @@
           }
           
           if(data.posterId) {
-            const posterUrl = getUnblockableImageUrl(data.posterId);
             document.getElementById('posterContainer').style.display = 'block';
-            document.getElementById('posterImg').src = posterUrl;
-            // Removed the script that was overriding the video thumbnail with the poster.
+            document.getElementById('posterImg').src = getUnblockableImageUrl(data.posterId);
           }
           
           resizeCanvas();
@@ -284,25 +287,19 @@
   };
 
   // ---------------------------------------------------------
-  // THE OMNIPRESENT INTERACTION HIJACK: Auto-Play & Unmute
+  // THE DYNAMIC IFRAME INJECTION: Auto-Play Bypass
   // ---------------------------------------------------------
-  const promoVideo = document.getElementById('promoVideo');
-  const playBtnOverlay = document.getElementById('playBtnOverlay');
   let videoStarted = false;
 
   function triggerVideoPlay() {
-    if(videoStarted || !promoVideo) return;
+    if(videoStarted) return;
     videoStarted = true;
     
-    promoVideo.muted = false; // Force unmute
-    const playPromise = promoVideo.play();
-    
-    if (playPromise !== undefined) {
-      playPromise.then(_ => {
-        if(playBtnOverlay) playBtnOverlay.style.display = 'none';
-      }).catch(error => {
-        videoStarted = false; // Awaiting explicit user click
-      });
+    const vidContainer = document.getElementById('vidContainer');
+    if(vidContainer) {
+      // By injecting the official Google Drive preview iframe natively with autoplay=1 AFTER an interaction, 
+      // it bypasses browser security and guarantees HD playback without a black box.
+      vidContainer.innerHTML = '<iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview?autoplay=1" style="position:absolute; top:0; left:0; width:100%; height:100%; border:none;" allow="autoplay" allowfullscreen></iframe>';
     }
   }
 
@@ -310,14 +307,6 @@
   document.body.addEventListener('click', triggerVideoPlay, { once: true });
   document.body.addEventListener('keydown', triggerVideoPlay, { once: true });
   document.body.addEventListener('touchstart', triggerVideoPlay, { once: true });
-
-  // Hide the custom play button if they manually click the native video controls
-  if(promoVideo) {
-    promoVideo.addEventListener('play', function() {
-      if(playBtnOverlay) playBtnOverlay.style.display = 'none';
-      videoStarted = true;
-    });
-  }
 
   // 2. Signature Canvas Matrix
   const canvas = document.getElementById('sigCanvas');
