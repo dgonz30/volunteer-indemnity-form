@@ -1,475 +1,1406 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Soul'd Out for Jesus - Registration</title>
-  <style>
-    :root { --primary: #8b0000; --secondary: #ffcc00; --accent: #33ccff; --bg: #f4f6f8; --text: #2d3436; --border: #dcdde1; }
-    * { box-sizing: border-box; }
-    body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: var(--bg); color: var(--text); margin: 0; padding: 20px 15px; font-size: 16px; line-height: 1.6; }
-    
-    .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 40px 30px; border-radius: 16px; border-top: 8px solid var(--primary); box-shadow: 0 12px 40px rgba(0,0,0,0.06); }
-    
-    #initLoader { text-align: center; padding: 50px; }
-    #initLoader p { font-size: 18px; color: var(--primary); font-weight: bold; margin-top: 15px; }
-    .spinner { border: 4px solid rgba(0,0,0,0.1); border-left-color: var(--primary); border-radius: 50%; width: 40px; height: 40px; animation: spin 1s linear infinite; margin: 0 auto; }
-    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
-
-    #mainApp, #closedMessage { display: none; }
-
-    .header { text-align: center; margin-bottom: 30px; }
-    .header img.logo { max-width: 160px; height: auto; margin-bottom: 20px; filter: drop-shadow(0px 8px 12px rgba(0,0,0,0.1)); display: none;}
-    .header h1 { font-size: 32px; margin: 0 0 10px 0; color: var(--primary); text-transform: uppercase; letter-spacing: 1.5px; font-weight: 900;}
-    .header p { color: #636e72; margin: 0; font-size: 18px; font-weight: 500;}
-    
-    #posterContainer { text-align: center; margin-bottom: 30px; display: none; }
-    #posterContainer img { max-width: 100%; height: auto; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
-    
-    .conduct-box { height: 400px; overflow-y: auto; background: #fafbfc; padding: 30px; border: 1px solid var(--border); border-left: 5px solid var(--secondary); border-radius: 12px; margin-bottom: 40px; font-size: 15px; color: #4b4b4b; box-shadow: inset 0 2px 6px rgba(0,0,0,0.03);}
-    .conduct-box h3 { color: var(--primary); margin-top: 25px; margin-bottom: 15px; font-size: 18px; border-bottom: 2px solid #eee; padding-bottom: 8px; text-transform: uppercase;}
-    .conduct-box h3:first-child { margin-top: 0; }
-    .conduct-box ul { margin-top: 10px; padding-left: 25px; }
-    .conduct-box strong { color: #2d3436; font-size: 16px; display: inline-block; margin-top: 15px; margin-bottom: 5px;}
-    
-    .form-section-title { font-size: 22px; color: var(--text); border-bottom: 3px solid var(--accent); padding-bottom: 10px; margin-bottom: 25px; display: inline-block; }
-    
-    .form-row { display: flex; gap: 25px; margin-bottom: 25px; flex-wrap: wrap; }
-    .form-group { flex: 1; min-width: 250px; display: flex; flex-direction: column; }
-    .form-group.full-width { width: 100%; margin-bottom: 25px; }
-    
-    label { font-weight: 700; font-size: 14px; margin-bottom: 10px; text-transform: uppercase; color: var(--primary);}
-    input[type="text"], input[type="email"], input[type="date"], input[type="number"], input[type="file"] { padding: 16px 20px; border: 2px solid var(--border); border-radius: 8px; font-size: 16px; transition: all 0.3s ease; background: #fdfdfd; width: 100%; color: var(--text); font-family: inherit;}
-    input:focus { outline: none; border-color: var(--accent); box-shadow: 0 0 0 4px rgba(51, 204, 255, 0.15); background: #fff;}
-    input[type="file"] { padding: 12px; background: #fff; cursor: pointer; }
-    
-    .sig-container { position: relative; width: 100%; margin-bottom: 10px;}
-    canvas { border: 2px dashed var(--border); border-radius: 12px; cursor: crosshair; width: 100%; height: 220px; background: #fff; touch-action: none; transition: border-color 0.3s; }
-    canvas:hover { border-color: var(--accent); }
-    
-    .btn-clear { position: absolute; top: -35px; right: 0; background: rgba(139,0,0,0.1); color: var(--primary); border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; font-weight: 700; cursor: pointer; text-transform: uppercase; transition: all 0.2s;}
-    .btn-clear:hover { background: var(--primary); color: #fff;}
-    
-    .btn-submit { background: var(--primary); color: white; padding: 20px; border: none; border-radius: 8px; cursor: pointer; font-size: 18px; font-weight: 800; width: 100%; margin-top: 30px; text-transform: uppercase; letter-spacing: 1.5px; transition: background 0.3s, transform 0.1s; box-shadow: 0 6px 12px rgba(139,0,0,0.2);}
-    .btn-submit:hover:not(:disabled) { background: #660000; }
-    .btn-submit:active:not(:disabled) { transform: scale(0.98); }
-    .btn-submit:disabled { background: #7f8c8d; cursor: not-allowed; box-shadow: none; }
-    
-    .consent-wrapper { display: flex; align-items: flex-start; gap: 15px; margin-top: 20px; padding: 20px; background: #f8f9fa; border-radius: 8px; border: 1px solid #eee;}
-    .consent-wrapper input { margin-top: 5px; width: 22px; height: 22px; accent-color: var(--primary); cursor: pointer;}
-    .consent-wrapper label { font-weight: 500; font-size: 15px; color: #4b4b4b; cursor: pointer; line-height: 1.5;}
-    
-    #loader { display: none; text-align: center; color: var(--primary); font-weight: 700; margin-top: 25px; font-size: 18px;}
-
-    /* ELITE ADAPTIVE VIDEO ARCHITECTURE */
-    .video-container {
-      position: relative;
-      width: 100%;
-      /* Modern 16:9 constraint prevents mobile collapse */
-      aspect-ratio: 16 / 9;
-      min-height: 250px; 
-      background: #000;
-      border-radius: 12px;
-      overflow: hidden;
-      box-shadow: 0 8px 25px rgba(0,0,0,0.15);
-      margin-top: 40px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-    
-    /* Legacy fallback for older iOS/Android that don't support aspect-ratio */
-    @supports not (aspect-ratio: 16 / 9) {
-      .video-container {
-        padding-bottom: 56.25%;
-        height: 0;
-      }
-    }
-
-    .video-container iframe {
-      position: absolute !important;
-      top: 0 !important;
-      left: 0 !important;
-      width: 100% !important;
-      height: 100% !important;
-      border: none !important;
-      margin: 0 !important;
-      padding: 0 !important;
-    }
-
-    .custom-play-btn {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80px;
-      height: 80px;
-      background: rgba(139,0,0,0.85);
-      border-radius: 50%;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 10;
-      transition: all 0.3s ease;
-      cursor: pointer;
-      box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-    }
-    .custom-play-btn svg {
-      fill: #fff;
-      width: 40px;
-      height: 40px;
-      margin-left: 5px;
-    }
-    .custom-play-btn:hover {
-      background: rgba(255,204,0,0.95);
-      transform: translate(-50%, -50%) scale(1.1);
-    }
-    .trailer-text {
-      position: absolute;
-      width: 100%;
-      text-align: center;
-      top: 65%;
-      color: #636e72;
-      font-weight: bold;
-      letter-spacing: 2px;
-      text-transform: uppercase;
-      font-size: 14px;
-      pointer-events: none;
-    }
-
-    /* Hardware orientation adaptions */
-    @media (orientation: landscape) and (max-height: 600px) {
-      .video-container {
-        max-width: 80%;
-        margin-left: auto;
-        margin-right: auto;
-      }
-    }
-    @media (max-width: 600px) { 
-      .container { padding: 30px 20px; } 
-      .conduct-box { height: 350px; padding: 20px; } 
-    }
-  </style>
-</head>
-<body>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>Soul'd Out for Jesus | Volunteer Induction &amp; Registration</title>
+<meta name="description" content="Serve with Soul'd Out for Jesus Ministries. Watch the induction, learn how we serve, and register as a volunteer for our next outreach.">
+<meta property="og:title" content="Volunteer with Soul'd Out for Jesus">
+<meta property="og:description" content="Be the hands that bring hope. Watch the 2-minute induction and register for our next outreach.">
+<meta name="theme-color" content="#12070a">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;700;800;900&display=swap" rel="stylesheet">
 
 <script>
-  // ==========================================
-  // PASTE YOUR DEPLOYED WEB APP URL HERE:
-  // ==========================================
-  const WEB_APP_URL = "https://script.google.com/macros/s/AKfycbw3fDYOwd6LsJkIQOvpYSknCaVI16DzVpDWbBvbRw7EmcehUcmqg2vLSQZXk-1xyDEtug/exec"; 
+  // ==========================================================
+  //  SETTINGS: the only part you normally need to edit
+  // ==========================================================
+  const CONFIG = {
+    // Your deployed Google Apps Script web app (same as before)
+    WEB_APP_URL: "https://script.google.com/macros/s/AKfycbw3fDYOwd6LsJkIQOvpYSknCaVI16DzVpDWbBvbRw7EmcehUcmqg2vLSQZXk-1xyDEtug/exec",
+
+    // Video 1: your anniversary video (Google Drive file ID)
+    ANNIVERSARY_VIDEO_ID: "1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb",
+
+    // Video 2: the induction. Leave "" to use the animated induction built into this page.
+    // If you later record or export an induction video, upload it to Drive,
+    // set sharing to "Anyone with the link", and paste its file ID here.
+    INDUCTION_VIDEO_ID: ""
+  };
 </script>
 
-<div class="container">
-  
-  <div id="initLoader">
-    <div class="spinner"></div>
-    <p>Loading Secure Gateway...</p>
-  </div>
+<style>
+  @property --h { syntax: '<number>'; inherits: true; initial-value: 350; }
 
-  <div id="closedMessage" style="text-align:center; padding: 60px 20px;">
-    <h2 style="color:#8b0000; font-size:26px; font-weight:900; text-transform:uppercase;">Event Closed</h2>
-    <p style="color:#636e72; font-size:18px;">There are no upcoming events to sign up for at this time.</p>
-  </div>
+  :root{
+    --maroon:#8b0000; --maroon-2:#c1121f; --gold:#ffcc00; --gold-2:#ffe27a; --cyan:#33ccff;
+    --ink:#0d0608; --ink-2:#170a0e; --panel:rgba(255,255,255,.055); --panel-2:rgba(255,255,255,.09);
+    --line:rgba(255,255,255,.13); --text:#fbf6f1; --muted:#d2c6c7; --ok:#2ee59d; --bad:#ff5a6a;
+    --radius:20px; --display:'Outfit', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth;scroll-padding-top:84px}
+  body{margin:0;background:var(--ink);color:var(--text);font:16px/1.6 system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;-webkit-font-smoothing:antialiased;overflow-x:hidden}
+  img{max-width:100%;display:block}
+  button{font:inherit;color:inherit;cursor:pointer}
+  a{color:var(--gold)}
+  h1,h2,h3,h4{font-family:var(--display);line-height:1.1;margin:0}
+  .wrap{width:min(1180px,100% - 40px);margin-inline:auto}
+  .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 
-  <div id="mainApp">
-    
-    <div class="header">
-      <img id="logoImg" class="logo" alt="Soul'd Out Logo">
-      <h1>Soul'd Out for Jesus</h1>
-      <p>Volunteer Indemnity & Registration</p>
-    </div>
+  /* ---------- ambient background ---------- */
+  .aurora{position:fixed;inset:-20%;z-index:-2;pointer-events:none;
+    background:
+      radial-gradient(40% 35% at 20% 15%, rgba(139,0,0,.55), transparent 70%),
+      radial-gradient(35% 30% at 85% 10%, rgba(255,204,0,.16), transparent 70%),
+      radial-gradient(40% 40% at 70% 85%, rgba(51,204,255,.12), transparent 70%),
+      radial-gradient(45% 40% at 10% 90%, rgba(193,18,31,.25), transparent 70%);
+    filter:blur(20px);animation:drift 26s ease-in-out infinite alternate}
+  @keyframes drift{to{transform:translate3d(3%,-2%,0) rotate(6deg) scale(1.08)}}
+  .grain{position:fixed;inset:0;z-index:-1;pointer-events:none;opacity:.05;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence baseFrequency='.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
 
-    <div id="posterContainer">
-      <img id="posterImg" alt="Event Poster">
-    </div>
-    
-    <div class="conduct-box">
-      <h3>Objectives of the Organization</h3>
-      <strong>Mission</strong><br>
-      Soul'd Out for Jesus Ministries Inc. is committed:
-      <ul>
-        <li>To spread hope and love through the gospel of Jesus Christ, among the unheard and least valued sectors of the society- the poor, the oppressed and the rejected.</li>
-        <li>To support them morally, emotionally and spiritually, as we believe that they, too, are God's children.</li>
-      </ul>
+  /* ---------- states ---------- */
+  #initLoader{min-height:100vh;display:grid;place-items:center;text-align:center}
+  .pulse-ring{width:84px;height:84px;margin:0 auto 22px;border-radius:50%;display:grid;place-items:center;position:relative}
+  .pulse-ring::before,.pulse-ring::after{content:"";position:absolute;inset:0;border-radius:50%;border:2px solid var(--gold);animation:ping 1.8s cubic-bezier(0,0,.2,1) infinite}
+  .pulse-ring::after{animation-delay:.9s;border-color:var(--cyan)}
+  .pulse-ring svg{width:34px;height:34px;color:var(--gold)}
+  @keyframes ping{0%{transform:scale(.6);opacity:1}100%{transform:scale(1.6);opacity:0}}
+  .loader-text{font-family:var(--display);letter-spacing:.2em;text-transform:uppercase;font-size:13px;color:var(--muted)}
+  #mainApp,#closedMessage,#gatewayError{display:none}
+  .state-card{min-height:100vh;display:grid;place-items:center;text-align:center;padding:40px 20px}
+  .state-card .card{max-width:520px;padding:44px 32px;border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);backdrop-filter:blur(14px)}
+  .state-card h2{font-size:30px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+  .state-card p{color:var(--muted);margin:0 0 20px}
 
-      <strong>Vision</strong><br>
-      Soul'd Out for Jesus Ministries Inc. envisions itself as a community of active social carers driven by the Great Commission of Jesus Christ in Matthew 28:19-20; reaching out to youth, young adults and families, encouraging them and equipping them.<br>
+  /* ---------- top nav ---------- */
+  .topbar{position:sticky;top:0;z-index:50;backdrop-filter:blur(16px) saturate(140%);background:rgba(13,6,8,.72);border-bottom:1px solid var(--line)}
+  .topbar .wrap{display:flex;align-items:center;gap:16px;height:64px}
+  .brand{display:flex;align-items:center;gap:10px;font-family:var(--display);font-weight:800;letter-spacing:.04em;text-decoration:none;color:var(--text);white-space:nowrap}
+  .brand img{width:34px;height:34px;object-fit:contain;display:none}
+  .brand .dot{width:10px;height:10px;border-radius:50%;background:var(--gold);box-shadow:0 0 14px var(--gold)}
+  .steps{display:flex;gap:6px;margin-left:auto;list-style:none;padding:0}
+  .steps a{display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:999px;text-decoration:none;color:var(--muted);font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;transition:.3s}
+  .steps a b{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;border:1px solid var(--line);font-size:11px}
+  .steps a.active{color:var(--ink);background:var(--gold)}
+  .steps a.active b{border-color:rgba(0,0,0,.3)}
+  .steps a.done b{background:var(--ok);color:var(--ink);border-color:var(--ok)}
+  .progress-line{position:absolute;left:0;bottom:-1px;height:2px;width:0;background:linear-gradient(90deg,var(--maroon-2),var(--gold),var(--cyan))}
+  @media (max-width:760px){.steps a span{display:none}.steps a{padding:5px}.steps{gap:2px}.brand{min-width:0;overflow:hidden}.brand .name{font-size:13px;overflow:hidden;text-overflow:ellipsis}}
 
-      <strong>Core Values</strong>
-      <ul>
-        <li>Molding Lives - We lead the young people of today to become resilient citizens of tomorrow.</li>
-        <li>Equipping Lives - We develop programs to equip the community to better care for those in need.</li>
-        <li>Enriching Lives - We help people find direction and purpose in life and their relationships.</li>
-        <li>Touching Lives - We extend helping hands to those who want to reach their fullest potential.</li>
-        <li>Sharing Jesus - Most especially, we share the message of Jesus' Love to all the individuals that we shall interact with.</li>
-      </ul>
+  /* ---------- buttons ---------- */
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;border:0;border-radius:14px;padding:16px 26px;font-family:var(--display);font-weight:800;letter-spacing:.06em;text-transform:uppercase;font-size:15px;text-decoration:none;transition:transform .15s, box-shadow .3s, background .3s}
+  .btn svg{width:18px;height:18px}
+  .btn-gold{color:#1a0b00;background:linear-gradient(135deg,var(--gold-2),var(--gold) 55%,#f2a900);box-shadow:0 10px 30px -8px rgba(255,204,0,.55), inset 0 1px 0 rgba(255,255,255,.6)}
+  .btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 40px -8px rgba(255,204,0,.7)}
+  .btn-ghost{color:var(--text);background:var(--panel);border:1px solid var(--line)}
+  .btn-ghost:hover{background:var(--panel-2)}
+  .btn:active{transform:scale(.97)}
+  .btn:disabled{opacity:.45;cursor:not-allowed;transform:none;box-shadow:none}
 
-      <h3>Personal Conduct</h3>
-      <strong>Dress Code</strong><br>
-      Volunteers are responsible for presenting a positive example to partners, clients and the community. Volunteers shall dress appropriately in public and at work, always keeping in mind the cultural norms and practices of the community. As a rule of thumb, all volunteers should be attired modestly as far as the nature of the voluntary work allows, and refrain from clothing with offensive or objectional material.<br>
+  /* ---------- hero ---------- */
+  .hero{position:relative;padding:70px 0 40px;overflow:hidden}
+  #particles{position:absolute;inset:0;width:100%;height:100%;z-index:0;opacity:.75}
+  .hero .wrap{position:relative;z-index:1;display:grid;grid-template-columns:1.05fr .95fr;gap:56px;align-items:center}
+  .eyebrow{display:inline-flex;align-items:center;gap:10px;padding:8px 14px;border-radius:999px;border:1px solid rgba(255,204,0,.35);background:rgba(255,204,0,.08);color:var(--gold);font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+  .live-dot{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 rgba(46,229,157,.7);animation:live 1.6s infinite}
+  @keyframes live{70%{box-shadow:0 0 0 10px rgba(46,229,157,0)}100%{box-shadow:0 0 0 0 rgba(46,229,157,0)}}
+  .hero h1{font-size:clamp(42px,6.4vw,84px);font-weight:900;letter-spacing:-.02em;margin:20px 0 16px;text-transform:uppercase}
+  .hero h1 .shine{background:linear-gradient(100deg,var(--gold-2) 10%,#fff 30%,var(--gold) 45%,var(--maroon-2) 75%,var(--gold) 95%);background-size:250% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:shine 7s linear infinite}
+  @keyframes shine{to{background-position:-250% 0}}
+  .hero .lead{font-size:clamp(18px,2vw,22px);color:var(--muted);max-width:560px;margin:0 0 30px}
+  .hero .lead strong{color:var(--text)}
+  .cta-row{display:flex;flex-wrap:wrap;gap:14px}
+  .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:38px;max-width:580px}
+  .stat{padding:14px 12px;border-radius:16px;background:var(--panel);border:1px solid var(--line);text-align:center}
+  .stat b{display:block;font-family:var(--display);font-size:30px;font-weight:900;color:var(--gold);line-height:1}
+  .stat span{font-size:11px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+  #countStat{display:none}
 
-      <strong>Personal and Public Communication</strong><br>
-      Volunteers shall exercise discretion in any personal communication regarding their assignment or other related persons and issues. Volunteers shall exercise extreme discretion in posting personal comments about projects, project partners, clients or the community on new media and social media platforms such as weblogs (or blog), podcasts, Facebook, Twitter, etc. Offensive or unwarranted negative comments may result in disciplinary action. Volunteers shall contact the organization if they require advice on such communication.<br>
+  /* event spotlight (poster) */
+  .spotlight{position:relative;perspective:1200px}
+  .spot-label{display:flex;justify-content:space-between;align-items:center;gap:12px;margin-bottom:14px}
+  .spot-label .tag{font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.18em;text-transform:uppercase;color:var(--gold)}
+  .spot-label .hint{font-size:12px;color:var(--muted)}
+  .poster-frame{position:relative;border-radius:22px;padding:3px;transform-style:preserve-3d;transition:transform .25s ease-out;cursor:zoom-in;
+    background:conic-gradient(from var(--spin,0deg),var(--gold),var(--maroon-2),var(--cyan),var(--gold));animation:spinBorder 6s linear infinite}
+  @property --spin{syntax:'<angle>';inherits:false;initial-value:0deg}
+  @keyframes spinBorder{to{--spin:360deg}}
+  .poster-frame::after{content:"";position:absolute;inset:-30px;z-index:-1;border-radius:40px;background:radial-gradient(closest-side,rgba(255,204,0,.35),transparent);filter:blur(30px)}
+  .poster-frame img{border-radius:19px;width:100%;max-height:72vh;object-fit:contain;background:#000}
+  .poster-placeholder{border-radius:19px;aspect-ratio:4/5;display:grid;place-items:center;text-align:center;padding:30px;background:linear-gradient(160deg,#2a0d13,#0e0507);color:var(--muted)}
+  .poster-placeholder h3{font-size:34px;color:var(--gold);text-transform:uppercase;margin-bottom:10px}
+  .event-meta{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .event-meta span{padding:8px 12px;border-radius:999px;background:var(--panel);border:1px solid var(--line);font-size:13px;font-weight:600}
+  .event-meta span:empty{display:none}
+  @media (max-width:900px){
+    .hero{padding-top:36px}
+    .hero .wrap{grid-template-columns:1fr;gap:34px}
+    .spotlight{order:-1}
+    .poster-frame img{max-height:56vh}
+    .stats{grid-template-columns:repeat(2,1fr)}
+  }
 
-      <strong>Personal behaviour</strong><br>
-      All relationships with beneficiaries shall be on a professional basis. Volunteers to avoid inappropriate physical or sexual relationships with other volunteers, staff and beneficiaries. At no time may volunteers engage in sexual activity with any beneficiaries or with a child (a person under the age of 18 regardless of the legal age of consent).<br>
+  /* lightbox */
+  .lightbox{position:fixed;inset:0;z-index:100;background:rgba(5,2,3,.92);display:none;place-items:center;padding:20px;cursor:zoom-out}
+  .lightbox.open{display:grid;animation:fade .25s}
+  .lightbox img{max-height:92vh;border-radius:12px;box-shadow:0 30px 80px rgba(0,0,0,.6)}
+  @keyframes fade{from{opacity:0}}
 
-      <strong>Unlawful Behavior</strong><br>
-      Soul'd Out for Jesus Ministries Inc. will not condone any conduct or pattern of behavior or any criminal behavior, which may or may not incur risk of injury, physical harm to self or others or presents a substantial possibility of loss or destruction of property. This will result in termination of the volunteers' involvement with the organization.<br>
+  /* ---------- sections ---------- */
+  section.block{padding:90px 0;position:relative}
+  .sec-head{max-width:720px;margin-bottom:44px}
+  .sec-kicker{display:flex;align-items:center;gap:12px;font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.22em;text-transform:uppercase;color:var(--cyan);margin-bottom:14px}
+  .sec-kicker i{font-style:normal;display:grid;place-items:center;width:30px;height:30px;border-radius:50%;border:1px solid rgba(51,204,255,.5);color:var(--cyan)}
+  .sec-head h2{font-size:clamp(32px,4.4vw,54px);font-weight:900;letter-spacing:-.01em;text-transform:uppercase}
+  .sec-head p{color:var(--muted);font-size:18px;margin:14px 0 0}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease, transform .8s cubic-bezier(.2,.7,.2,1)}
+  .reveal.in{opacity:1;transform:none}
 
-      <h3>Professional Conduct</h3>
-      <strong>Collaboration and communication</strong><br>
-      Volunteers should maintain cordial relationships and collaborate with staff, other volunteers and beneficiaries with the highest standards of professional courtesy. Volunteers should communicate sensitively and in ways appropriate to existing cultural norms.<br>
+  /* ---------- videos ---------- */
+  .videos{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+  @media (max-width:860px){.videos{grid-template-columns:1fr}}
+  .vcard{border-radius:var(--radius);background:var(--panel);border:1px solid var(--line);padding:14px;transition:border-color .3s, transform .3s}
+  .vcard:hover{border-color:rgba(255,204,0,.4)}
+  .vlabel{display:flex;align-items:center;gap:10px;padding:6px 6px 14px}
+  .vnum{white-space:nowrap;font-family:var(--display);font-weight:900;font-size:12px;letter-spacing:.14em;padding:6px 10px;border-radius:8px;background:var(--maroon);color:#fff;text-transform:uppercase}
+  .vnum.cy{background:var(--cyan);color:#001018}
+  .vlabel h3{font-size:20px;font-weight:800}
+  .vlabel .len{margin-left:auto;font-size:12px;color:var(--muted);white-space:nowrap}
+  .vdesc{color:var(--muted);font-size:14.5px;margin:12px 6px 4px}
+  .frame{position:relative;aspect-ratio:16/9;border-radius:14px;overflow:hidden;background:#000;container-type:inline-size}
+  .frame iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+  .frame .thumb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:.55;filter:saturate(1.2)}
+  .frame .thumb-fallback{position:absolute;inset:0;background:radial-gradient(60% 80% at 30% 30%,#5b0f17,#0b0406)}
+  .play-overlay{position:absolute;inset:0;display:grid;place-items:center;background:none;border:0;padding:0;z-index:3}
+  .play-overlay .pbtn{width:84px;height:84px;border-radius:50%;display:grid;place-items:center;background:rgba(139,0,0,.88);box-shadow:0 0 0 0 rgba(255,204,0,.6);animation:breathe 2.4s ease-in-out infinite;transition:transform .3s, background .3s}
+  .play-overlay:hover .pbtn{transform:scale(1.1);background:var(--gold);color:#1a0b00}
+  .play-overlay svg{width:36px;height:36px;margin-left:5px}
+  .play-overlay .ptext{position:absolute;bottom:18px;left:0;right:0;text-align:center;font-family:var(--display);font-weight:800;font-size:13px;letter-spacing:.2em;text-transform:uppercase}
+  @keyframes breathe{50%{box-shadow:0 0 0 18px rgba(255,204,0,0)}}
 
-      <strong>Decorum</strong><br>
-      Volunteers should exercise care in their language, gestures and attitudes, ensuring that they do not act in such a manner that is harmful to others. The use of abusive language or calling of offensive names or making of inappropriate remarks is strictly prohibited as is intimate or inappropriate physical contact. Volunteers must uphold respect for privacy. Volunteers should not take photos or make recordings of any kind during the volunteering session. They should not request or exchange personal details or contact information with beneficiaries. Volunteers must ensure safety to oneself and to others at all times. Volunteers must not smoke, use or be in possession, or be under the influence of alcohol or non-prescriptive drugs at any time while serving the community.<br>
+  /* ---------- induction story player ---------- */
+  .story{position:absolute;inset:0;overflow:hidden;user-select:none;--h:350;
+    background:radial-gradient(70% 90% at 20% 15%, hsl(var(--h) 85% 28% / .95), transparent 65%),
+               radial-gradient(60% 70% at 90% 100%, hsl(calc(var(--h) + 45) 95% 50% / .35), transparent 60%), #0a0406;
+    transition:--h 1.2s ease}
+  .story-bars{position:absolute;top:10px;left:12px;right:12px;display:flex;gap:4px;z-index:4}
+  .story-bars div{flex:1;height:3px;border-radius:3px;background:rgba(255,255,255,.22);overflow:hidden}
+  .story-bars i{display:block;height:100%;width:0;background:#fff}
+  .story-stage{position:absolute;inset:0;display:grid;grid-template-columns:30% 1fr;align-items:center;gap:4cqw;padding:7cqw 6cqw 9cqw}
+  .story-icon{position:relative;aspect-ratio:1;display:grid;place-items:center}
+  .story-icon .halo{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,transparent,rgba(255,204,0,.75),transparent 40%,rgba(51,204,255,.6),transparent 75%);animation:spin 5s linear infinite;-webkit-mask:radial-gradient(closest-side,transparent 78%,#000 80%);mask:radial-gradient(closest-side,transparent 78%,#000 80%)}
+  .story-icon .core{width:72%;aspect-ratio:1;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,rgba(255,255,255,.18),rgba(255,255,255,.03));border:1px solid rgba(255,255,255,.18);animation:float 4s ease-in-out infinite}
+  .story-icon svg{width:52%;height:52%;color:var(--gold);filter:drop-shadow(0 0 12px rgba(255,204,0,.6))}
+  @keyframes spin{to{transform:rotate(360deg)}}
+  @keyframes float{50%{transform:translateY(-6%)}}
+  .story-kicker{font-family:var(--display);font-weight:800;font-size:clamp(9px,2.1cqw,14px);letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:1.4cqw}
+  .story-title{font-size:clamp(18px,5.6cqw,46px);font-weight:900;text-transform:uppercase;letter-spacing:-.01em;line-height:1.02}
+  .story-title span{display:inline-block;opacity:0;transform:translateY(40%) scale(.96);filter:blur(6px);animation:word .6s cubic-bezier(.2,.8,.2,1) forwards}
+  @keyframes word{to{opacity:1;transform:none;filter:none}}
+  .story-body{font-size:clamp(11px,2.8cqw,20px);color:rgba(255,255,255,.86);margin:1.8cqw 0 0;opacity:0;animation:fadeUp .7s ease forwards}
+  @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+  .story-chips{display:flex;flex-wrap:wrap;gap:1cqw;margin-top:1.8cqw}
+  .story-chips span{font-size:clamp(9px,2.1cqw,14px);font-weight:700;padding:.6cqw 1.6cqw;border-radius:999px;border:1px solid rgba(255,204,0,.5);color:var(--gold-2);opacity:0;animation:fadeUp .5s ease forwards}
+  .story-cta{margin-top:2.4cqw;padding:1.4cqw 3cqw;font-size:clamp(10px,2.3cqw,15px)}
+  .story-controls{position:absolute;left:0;right:0;bottom:0;z-index:4;display:flex;align-items:center;gap:6px;padding:8px 12px;background:linear-gradient(transparent,rgba(0,0,0,.55))}
+  .story-controls button{background:rgba(255,255,255,.12);border:0;border-radius:10px;width:34px;height:34px;display:grid;place-items:center}
+  .story-controls button:hover{background:rgba(255,255,255,.25)}
+  .story-controls svg{width:16px;height:16px}
+  .story-controls .count{margin-left:auto;font-size:12px;font-weight:700;letter-spacing:.1em;color:rgba(255,255,255,.75)}
+  .story-tap{position:absolute;top:0;bottom:50px;width:30%;z-index:3;background:none;border:0}
+  .story-tap.l{left:0}.story-tap.r{right:0}
+  .story.paused .story-stage{filter:brightness(.8)}
+  @container (max-width:420px){.story-stage{grid-template-columns:24% 1fr;padding:9cqw 5cqw 12cqw}}
 
-      <strong>Conflict of Interest</strong><br>
-      Volunteers should avoid any personal, financial, conflict or other interests that might hinder their capability or willingness to perform their assigned duties. Volunteers are expected to avoid situations which may have conflict of interest with the organisation (e.g. other commitments, roles in other organisations). If any potential area of conflict arises, please consult with your supervisor and/or the Administration Manager.<br>
+  /* ---------- learn: mission + orbit ---------- */
+  .mv{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-bottom:70px}
+  @media (max-width:860px){.mv{grid-template-columns:1fr}}
+  .glass{border-radius:var(--radius);background:linear-gradient(160deg,rgba(255,255,255,.07),rgba(255,255,255,.02));border:1px solid var(--line);padding:30px;position:relative;overflow:hidden}
+  .glass::before{content:"";position:absolute;width:220px;height:220px;right:-80px;top:-80px;border-radius:50%;background:radial-gradient(closest-side,rgba(255,204,0,.18),transparent)}
+  .glass h3{font-size:14px;letter-spacing:.22em;text-transform:uppercase;color:var(--gold);margin-bottom:14px}
+  .glass p{margin:0 0 12px;font-size:17px}
+  .serve-pills{display:flex;flex-wrap:wrap;gap:10px;margin-top:16px}
+  .serve-pills span{padding:10px 16px;border-radius:999px;font-weight:800;font-family:var(--display);letter-spacing:.04em;background:rgba(139,0,0,.35);border:1px solid rgba(255,90,106,.4);animation:glow 3s ease-in-out infinite}
+  .serve-pills span:nth-child(2){animation-delay:1s}.serve-pills span:nth-child(3){animation-delay:2s}
+  .serve-pills.cy span{background:rgba(51,204,255,.12);border-color:rgba(51,204,255,.4)}
+  @keyframes glow{50%{box-shadow:0 0 24px rgba(255,90,106,.45)}}
+  .verse{margin-top:18px;padding:14px 18px;border-left:3px solid var(--gold);background:rgba(255,204,0,.06);border-radius:0 12px 12px 0;font-style:italic;color:var(--gold-2)}
+  .verse small{display:block;font-style:normal;color:var(--muted);margin-top:4px;font-size:12px;letter-spacing:.08em}
 
-      <strong>Punctuality and Absenteeism</strong><br>
-      Volunteers are expected to perform their duties punctually and as assigned. When expecting to be absent from scheduled duty, volunteers shall inform the organizers as far in advance as possible so that alternative arrangements may be made.<br>
+  .values{display:grid;grid-template-columns:auto 1fr;gap:60px;align-items:center}
+  @media (max-width:900px){.values{grid-template-columns:1fr;gap:30px;justify-items:center}}
+  .orbit{--size:min(440px,86vw);--node:clamp(78px,20vw,104px);width:var(--size);height:var(--size);position:relative}
+  .orbit-ring{position:absolute;border-radius:50%;border:1px dashed rgba(255,255,255,.16)}
+  .orbit-ring.r1{inset:calc(var(--node)/2)}
+  .orbit-ring.r2{inset:22%;border-style:solid;border-color:rgba(255,204,0,.14)}
+  .orbit-ring.r1::after{content:"";position:absolute;top:-4px;left:50%;width:8px;height:8px;border-radius:50%;background:var(--cyan);box-shadow:0 0 14px var(--cyan);transform-origin:4px calc(var(--size)/2 - var(--node)/2 + 4px);animation:spin 9s linear infinite}
+  .orbit-core{position:absolute;left:50%;top:50%;width:34%;aspect-ratio:1;transform:translate(-50%,-50%);border-radius:50%;border:0;display:grid;place-items:center;text-align:center;padding:10px;
+    background:radial-gradient(circle at 35% 30%,#ff4655,var(--maroon) 60%,#3d0006);box-shadow:0 0 60px rgba(193,18,31,.6), inset 0 0 30px rgba(0,0,0,.4);font-family:var(--display);font-weight:900;text-transform:uppercase;font-size:clamp(12px,3.4vw,17px);line-height:1.1;animation:heartbeat 2.8s ease-in-out infinite}
+  .orbit-core svg{display:block;width:26px;height:26px;color:var(--gold);margin:0 auto 4px}
+  @keyframes heartbeat{0%,100%{transform:translate(-50%,-50%) scale(1)}12%{transform:translate(-50%,-50%) scale(1.06)}24%{transform:translate(-50%,-50%) scale(1)}36%{transform:translate(-50%,-50%) scale(1.04)}}
+  .orbit-spin{position:absolute;inset:0;animation:spin 60s linear infinite}
+  .orbit:hover .orbit-spin,.orbit:hover .orbit-node>span,.orbit.hold .orbit-spin,.orbit.hold .orbit-node>span{animation-play-state:paused}
+  .orbit-node{position:absolute;left:50%;top:50%;width:var(--node);height:var(--node);margin:calc(var(--node)/-2) 0 0 calc(var(--node)/-2);border:0;background:none;padding:0;
+    transform:rotate(var(--a)) translate(calc(var(--size)/2 - var(--node)/2)) rotate(calc(-1 * var(--a)))}
+  .orbit-node>span{display:grid;place-items:center;width:100%;height:100%;border-radius:50%;background:rgba(20,9,12,.9);border:1px solid var(--line);font-family:var(--display);font-weight:800;font-size:clamp(11px,2.8vw,14px);letter-spacing:.03em;text-transform:uppercase;animation:spin 60s linear infinite reverse;transition:background .4s,border-color .4s,box-shadow .4s,color .4s}
+  .orbit-node>span em{display:block;font-style:normal}
+  .orbit-node>span svg{display:block;width:22px;height:22px;color:var(--cyan);margin:0 auto 4px}
+  .orbit-node.active>span{background:var(--gold);color:#1a0b00;border-color:var(--gold);box-shadow:0 0 40px rgba(255,204,0,.6)}
+  .orbit-node.active>span svg{color:#1a0b00}
+  .orbit-core.active{box-shadow:0 0 0 6px rgba(255,204,0,.5),0 0 80px rgba(255,204,0,.5)}
+  .value-panel{min-height:210px}
+  .value-panel .vp-k{font-family:var(--display);font-weight:800;color:var(--cyan);letter-spacing:.2em;text-transform:uppercase;font-size:13px}
+  .value-panel h3{font-size:clamp(34px,4.5vw,56px);font-weight:900;text-transform:uppercase;margin:8px 0 12px}
+  .value-panel p{font-size:20px;color:var(--muted);margin:0;max-width:520px}
+  .value-panel .vp-anim{animation:fadeUp .6s ease}
+  .vp-dots{display:flex;gap:8px;margin-top:24px}
+  .vp-dots button{width:34px;height:6px;border-radius:6px;border:0;background:rgba(255,255,255,.2);padding:0}
+  .vp-dots button.on{background:var(--gold)}
 
-      <strong>Confidentiality</strong><br>
-      Volunteers are expected to maintain the confidentiality of all proprietary or privileged or personal information to which they are exposed while serving as volunteers, whether this information involves a single member of staff, volunteers, beneficiary, or other person or involving the activities of Soul'd Out of Jesus Ministries Inc.<br>
+  /* ---------- day timeline ---------- */
+  .timeline{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;position:relative;margin-top:80px}
+  .timeline::before{content:"";position:absolute;top:36px;left:6%;right:6%;height:2px;background:repeating-linear-gradient(90deg,var(--gold) 0 10px,transparent 10px 20px);background-size:40px 2px;animation:dash 1.2s linear infinite;opacity:.6}
+  @keyframes dash{to{background-position:40px 0}}
+  .tl-step{position:relative;text-align:center;padding:0 6px}
+  .tl-dot{width:72px;height:72px;margin:0 auto 18px;border-radius:50%;display:grid;place-items:center;background:var(--ink-2);border:2px solid var(--gold);box-shadow:0 0 0 8px rgba(255,204,0,.08);position:relative;z-index:1}
+  .tl-dot svg{width:30px;height:30px;color:var(--gold)}
+  .tl-step h4{font-size:20px;text-transform:uppercase;margin-bottom:10px}
+  .tl-step ul{list-style:none;margin:0;padding:0;color:var(--muted);font-size:15px}
+  .tl-step li{padding:4px 0}
+  @media (max-width:860px){
+    .timeline{grid-template-columns:1fr;gap:26px}
+    .timeline::before{top:0;bottom:0;left:35px;right:auto;width:2px;height:auto;background:repeating-linear-gradient(180deg,var(--gold) 0 10px,transparent 10px 20px);background-size:2px 40px;animation:dashV 1.2s linear infinite}
+    @keyframes dashV{to{background-position:0 40px}}
+    .tl-step{display:grid;grid-template-columns:72px 1fr;gap:18px;text-align:left;align-items:start}
+    .tl-dot{margin:0}
+  }
+  .note{margin-top:46px;display:flex;gap:16px;align-items:flex-start;padding:20px 22px;border-radius:16px;background:rgba(51,204,255,.07);border:1px solid rgba(51,204,255,.25)}
+  .note svg{flex:none;width:26px;height:26px;color:var(--cyan)}
+  .note p{margin:0;color:var(--text)}
 
-      <strong>Volunteer Exclusivity</strong><br>
-      No volunteers are designated as exclusive to Soul'd Out for Jesus Ministries Inc. or its related activities. Each volunteer has the freedom to participate based on their own choice. Therefore, any volunteer is free to engage in activities with other organizations, as long as the actions outside of Soul'd Out for Jesus Ministries Inc. do not hold the organization accountable.
-    </div>
+  /* ---------- commitments ---------- */
+  .commit-head{display:grid;grid-template-columns:1fr auto;gap:30px;align-items:end;margin-bottom:34px}
+  @media (max-width:760px){.commit-head{grid-template-columns:1fr}}
+  .meter{display:flex;align-items:center;gap:16px;padding:14px 20px 14px 14px;border-radius:999px;background:var(--panel);border:1px solid var(--line)}
+  .meter svg{width:74px;height:74px;transform:rotate(-90deg)}
+  .meter circle{fill:none;stroke-width:8}
+  .meter .bg{stroke:rgba(255,255,255,.1)}
+  .meter .fg{stroke:url(#meterGrad);stroke-linecap:round;transition:stroke-dashoffset .8s cubic-bezier(.2,.8,.2,1)}
+  .meter b{font-family:var(--display);font-size:28px;font-weight:900}
+  .meter small{display:block;color:var(--muted);font-size:12px;letter-spacing:.12em;text-transform:uppercase}
+  .meter.full{border-color:var(--ok);box-shadow:0 0 40px rgba(46,229,157,.25)}
+  .cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:18px}
+  .ccard{position:relative;border-radius:18px;padding:22px;background:linear-gradient(165deg,rgba(255,255,255,.07),rgba(255,255,255,.015));border:1px solid var(--line);display:flex;flex-direction:column;gap:12px;transition:transform .35s, border-color .35s, box-shadow .35s;overflow:hidden}
+  .ccard:hover{transform:translateY(-4px);border-color:rgba(255,204,0,.35)}
+  .ccard{--c:var(--gold)}
+  .ccard .ci{width:46px;height:46px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 16%,transparent);color:var(--c);box-shadow:0 0 24px color-mix(in srgb,var(--c) 25%,transparent)}
+  .ccard::after{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:linear-gradient(90deg,var(--c),transparent)}
+  .ccard .ci svg{width:24px;height:24px}
+  .ccard .num{position:absolute;top:18px;right:20px;font-family:var(--display);font-weight:900;font-size:34px;color:rgba(255,255,255,.07)}
+  .ccard h4{font-size:19px;text-transform:uppercase}
+  .ccard .do,.ccard .dont{display:flex;gap:10px;font-size:15.5px;line-height:1.5;margin:0}
+  .ccard .do::before,.ccard .dont::before{flex:none;display:grid;place-items:center;width:20px;height:20px;border-radius:6px;font-size:12px;font-weight:900;margin-top:2px}
+  .ccard .do::before{content:"✓";background:rgba(46,229,157,.18);color:var(--ok)}
+  .ccard .dont::before{content:"✕";background:rgba(255,90,106,.18);color:var(--bad)}
+  .ccard .commit-btn{margin-top:auto;border:1px solid rgba(255,204,0,.45);background:transparent;border-radius:12px;padding:12px;font-family:var(--display);font-weight:800;letter-spacing:.1em;text-transform:uppercase;font-size:13px;color:var(--gold);display:flex;align-items:center;justify-content:center;gap:8px;transition:.3s}
+  .ccard .commit-btn svg{width:16px;height:16px}
+  .ccard .commit-btn:hover{background:rgba(255,204,0,.1)}
+  .ccard.done{border-color:rgba(46,229,157,.55);box-shadow:0 0 0 1px rgba(46,229,157,.2), 0 10px 40px -10px rgba(46,229,157,.35)}
+  .ccard.done .commit-btn{background:var(--ok);border-color:var(--ok);color:#00261a}
+  .ccard.pop{animation:pop .5s}
+  @keyframes pop{40%{transform:scale(1.04)}}
+  .commit-all-hint{margin-top:22px;color:var(--muted);font-size:14px;text-align:center}
 
-    <div class="form-section-title">Registration Form</div>
+  /* scenario check */
+  .quiz{margin-top:70px}
+  .quiz h3{font-size:clamp(26px,3vw,36px);text-transform:uppercase;margin-bottom:8px}
+  .quiz > p{color:var(--muted);margin:0 0 24px}
+  .qgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  @media (max-width:960px){.qgrid{grid-template-columns:1fr}}
+  .q{border-radius:18px;padding:22px;background:var(--panel);border:1px solid var(--line)}
+  .q .qs{font-weight:700;font-size:16.5px;margin:0 0 14px}
+  .q .qs small{display:block;color:var(--cyan);font-size:12px;letter-spacing:.16em;text-transform:uppercase;margin-bottom:6px}
+  .q button.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:12px 14px;border-radius:12px;background:rgba(255,255,255,.04);border:1px solid var(--line);font-size:14.5px;transition:.25s}
+  .q button.opt:hover{border-color:rgba(255,255,255,.35)}
+  .q button.opt.right{background:rgba(46,229,157,.15);border-color:var(--ok)}
+  .q button.opt.wrong{background:rgba(255,90,106,.12);border-color:var(--bad)}
+  .q .fb{font-size:14px;margin:10px 0 0;min-height:1em;color:var(--muted)}
 
-    <form id="regForm">
-      <div class="form-group full-width"><label>Full Legal Name</label><input type="text" id="name" placeholder="Enter your full name" required></div>
-      <div class="form-group full-width"><label>Complete Address</label><input type="text" id="address" placeholder="Street, City, Province" required></div>
-      
-      <div class="form-row">
-        <div class="form-group"><label>Email Address</label><input type="email" id="email" placeholder="your@email.com" required></div>
-        <div class="form-group"><label>Phone Number</label><input type="text" id="phone" placeholder="+63 900 000 0000" required></div>
-      </div>
-      
-      <div class="form-row">
-        <div class="form-group"><label>Date of Birth</label><input type="date" id="dob" required></div>
-        <div class="form-group"><label>Age</label><input type="number" id="age" placeholder="e.g. 25" required></div>
-      </div>
-      
-      <div class="form-group full-width"><label>Upload Valid ID</label><input type="file" id="idFile" accept="image/*,.pdf" required></div>
-      
-      <div class="form-group full-width sig-container">
-        <label>Digital Signature (Draw Here)</label>
-        <button type="button" class="btn-clear" onclick="clearCanvas()">Clear Signature</button>
-        <canvas id="sigCanvas"></canvas>
-      </div>
-      
-      <div class="consent-wrapper">
-        <input type="checkbox" id="consent" required>
-        <label for="consent">I have read the complete Volunteer Code of Conduct above. I fully understand and agree that the personal information provided will be used for program-related communication.</label>
-      </div>
-      
-      <button type="submit" class="btn-submit" id="submitBtn">Submit Application</button>
-      <div id="loader">INITIALIZING CONTRACT... PLEASE WAIT ⏳<br><span style="font-size:12px; color:#555;">Processing files & generating PDF securely...</span></div>
-    </form>
+  /* full code */
+  details.fullcode{margin-top:60px;border-radius:18px;background:var(--panel);border:1px solid var(--line);overflow:hidden}
+  details.fullcode summary{list-style:none;cursor:pointer;padding:20px 24px;display:flex;align-items:center;gap:14px;font-family:var(--display);font-weight:800;letter-spacing:.06em;text-transform:uppercase}
+  details.fullcode summary::-webkit-details-marker{display:none}
+  details.fullcode summary svg{width:22px;height:22px;color:var(--gold)}
+  details.fullcode summary .chev{margin-left:auto;transition:transform .3s}
+  details.fullcode[open] summary .chev{transform:rotate(180deg)}
+  .code-body{max-height:460px;overflow:auto;padding:4px 26px 26px;color:#d9cfd0;font-size:15px;border-top:1px solid var(--line)}
+  .code-body h3{color:var(--gold);font-size:16px;letter-spacing:.14em;text-transform:uppercase;margin:24px 0 10px}
+  .code-body strong{display:block;color:#fff;margin-top:14px}
+  .code-body ul{padding-left:22px}
 
-    <!-- DEVICE-ADAPTIVE DYNAMIC IFRAME INJECTION CONTAINER -->
-    <div class="video-container" id="vidContainer">
-      <div class="custom-play-btn" id="playBtnOverlay">
-        <svg viewBox="0 0 24 24"><path d="M8 5v14l11-7z"/></svg>
-      </div>
-      <div class="trailer-text" id="trailerText">Event Trailer</div>
-    </div>
+  /* ---------- form ---------- */
+  .form-shell{display:grid;grid-template-columns:.8fr 1.2fr;gap:40px;align-items:start}
+  @media (max-width:960px){.form-shell{grid-template-columns:1fr}}
+  .form-aside{position:sticky;top:96px}
+  .form-aside .mini-poster{border-radius:16px;overflow:hidden;border:1px solid var(--line);margin-top:22px;display:none}
+  .checklist{list-style:none;padding:0;margin:22px 0 0}
+  .checklist li{display:flex;gap:12px;align-items:center;padding:10px 0;color:var(--muted);border-bottom:1px dashed var(--line)}
+  .checklist li i{flex:none;width:24px;height:24px;border-radius:50%;border:1.5px solid var(--line);display:grid;place-items:center;font-style:normal;font-size:12px}
+  .checklist li.ok{color:var(--text)}
+  .checklist li.ok i{background:var(--ok);border-color:var(--ok);color:#00261a}
+  @media (max-width:960px){.form-aside{position:static}}
+  form#regForm{border-radius:24px;padding:34px;background:linear-gradient(170deg,rgba(255,255,255,.08),rgba(255,255,255,.02));border:1px solid var(--line);box-shadow:0 40px 80px -30px rgba(0,0,0,.7)}
+  @media (max-width:600px){form#regForm{padding:22px 18px}}
+  .row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media (max-width:600px){.row{grid-template-columns:1fr}}
+  .fgroup{border:0;margin:0 0 26px;padding:0}
+  .fgroup legend{display:flex;align-items:center;gap:10px;padding:0;margin-bottom:14px;font-family:var(--display);font-weight:800;font-size:17px;letter-spacing:.04em;text-transform:uppercase}
+  .fgroup legend b{display:grid;place-items:center;width:28px;height:28px;border-radius:9px;background:linear-gradient(135deg,var(--maroon-2),var(--gold));color:#1a0b00;font-size:14px}
+  .fgroup legend small{margin-left:auto;font-family:system-ui,sans-serif;font-weight:600;font-size:12px;letter-spacing:.06em;color:var(--muted);text-transform:none}
+  .fgroup.complete legend b{background:var(--ok)}
+  .field{position:relative;margin-bottom:16px}
+  .field.valid input{border-color:rgba(46,229,157,.7)}
+  .field.valid input:not([type=date]){padding-right:48px}
+  .field.valid::after{content:"\2713";position:absolute;right:14px;top:17px;width:22px;height:22px;border-radius:50%;background:var(--ok);color:#00261a;font-size:12px;font-weight:900;display:grid;place-items:center;pointer-events:none}
+  .field.always.valid::after{right:46px}
+  .field.invalid .help{color:var(--bad)}
+  .field input{width:100%;padding:24px 16px 10px;border-radius:14px;border:1.5px solid var(--line);background:rgba(0,0,0,.28);color:var(--text);font-size:16px;font-family:inherit;transition:border-color .25s, box-shadow .25s;color-scheme:dark}
+  .field label{position:absolute;left:17px;top:17px;font-size:15px;color:var(--muted);pointer-events:none;transition:.2s}
+  .field input:focus,.field input:not(:placeholder-shown){outline:0}
+  .field input:focus{border-color:var(--cyan);box-shadow:0 0 0 4px rgba(51,204,255,.15)}
+  .field input:focus + label,.field input:not(:placeholder-shown) + label,.field.always label{top:7px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--gold);font-weight:700}
+  .field input[readonly]{opacity:.85}
+  .field .help{font-size:12px;color:var(--muted);margin:6px 4px 0}
+  .field.invalid input{border-color:var(--bad)}
+  .block-label{display:block;font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--gold);font-weight:800;margin:6px 0 10px}
+  .drop{position:relative;display:flex;align-items:center;gap:16px;padding:18px;border-radius:14px;border:1.5px dashed rgba(255,255,255,.25);background:rgba(0,0,0,.22);cursor:pointer;transition:.25s;margin-bottom:18px}
+  .drop:hover,.drop.drag{border-color:var(--cyan);background:rgba(51,204,255,.07)}
+  .drop input{position:absolute;inset:0;opacity:0;cursor:pointer}
+  .drop .dicon{flex:none;width:50px;height:50px;border-radius:12px;display:grid;place-items:center;background:rgba(51,204,255,.12);color:var(--cyan);overflow:hidden}
+  .drop .dicon svg{width:24px;height:24px}
+  .drop .dicon img{width:100%;height:100%;object-fit:cover}
+  .drop b{display:block}
+  .drop small{color:var(--muted)}
+  .drop.has{border-style:solid;border-color:var(--ok)}
+  .sig-wrap{position:relative;margin-bottom:6px}
+  #sigCanvas{display:block;width:100%;height:200px;border-radius:14px;background:#fffdf8;touch-action:none;cursor:crosshair;box-shadow:inset 0 0 0 2px rgba(255,204,0,.25)}
+  .sig-line{position:absolute;left:24px;right:24px;bottom:46px;border-bottom:1.5px dashed #c9bfb3;pointer-events:none}
+  .sig-x{position:absolute;left:24px;bottom:52px;font:700 20px var(--display);color:#c9bfb3;pointer-events:none}
+  .sig-ph{position:absolute;inset:0;display:grid;place-items:center;color:#a99d92;font-weight:600;pointer-events:none;transition:opacity .3s}
+  .sig-wrap.inked .sig-ph{opacity:0}
+  .sig-tools{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px;font-size:13px;color:var(--muted)}
+  .link-btn{background:none;border:0;color:var(--gold);font-weight:800;letter-spacing:.08em;text-transform:uppercase;font-size:12px;padding:6px 0}
+  .consent{display:flex;gap:14px;align-items:flex-start;padding:18px;border-radius:14px;background:rgba(0,0,0,.25);border:1px solid var(--line);margin-top:6px;transition:.3s}
+  .consent input{flex:none;width:22px;height:22px;margin-top:2px;accent-color:var(--gold);cursor:pointer}
+  .consent label{font-size:15px;cursor:pointer}
+  .consent.locked{opacity:.6}
+  .consent.locked input{cursor:not-allowed}
+  .lock-msg{display:flex;gap:10px;align-items:center;font-size:13.5px;color:var(--gold-2);margin:10px 2px 0}
+  .lock-msg svg{width:16px;height:16px;flex:none}
+  .submit{width:100%;margin-top:24px;padding:20px;font-size:17px}
+  .form-error{display:none;margin-top:14px;padding:12px 16px;border-radius:12px;background:rgba(255,90,106,.12);border:1px solid var(--bad);font-size:14.5px}
+  .privacy{font-size:12.5px;color:var(--muted);margin:14px 2px 0;text-align:center}
 
+  /* processing overlay */
+  .processing{position:fixed;inset:0;z-index:90;display:none;place-items:center;background:rgba(8,3,5,.86);backdrop-filter:blur(10px);padding:20px}
+  .processing.open{display:grid;animation:fade .3s}
+  .proc-card{width:min(440px,100%);text-align:center}
+  .proc-card h3{font-size:24px;text-transform:uppercase;margin:24px 0 18px}
+  .proc-steps{list-style:none;padding:0;margin:0;text-align:left}
+  .proc-steps li{display:flex;gap:12px;align-items:center;padding:10px 14px;border-radius:12px;color:var(--muted);transition:.4s}
+  .proc-steps li i{width:22px;height:22px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-style:normal;font-size:11px}
+  .proc-steps li.now{background:var(--panel);color:var(--text)}
+  .proc-steps li.now i{border-color:var(--gold);border-top-color:transparent;animation:spin .8s linear infinite}
+  .proc-steps li.ok{color:var(--text)}
+  .proc-steps li.ok i{background:var(--ok);border-color:var(--ok);color:#00261a}
+
+  /* success */
+  .success{min-height:100vh;display:grid;place-items:center;text-align:center;padding:60px 20px}
+  .success .card{max-width:640px}
+  .success .check{width:110px;height:110px;margin:0 auto 26px;border-radius:50%;display:grid;place-items:center;background:radial-gradient(circle at 35% 30%,#5dffc0,#14b878);box-shadow:0 0 70px rgba(46,229,157,.55);animation:pop .7s}
+  .success .check svg{width:56px;height:56px;color:#00261a;stroke-dasharray:30;stroke-dashoffset:30;animation:drawck .6s .3s forwards}
+  @keyframes drawck{to{stroke-dashoffset:0}}
+  .success h2{font-size:clamp(32px,5vw,52px);text-transform:uppercase;margin-bottom:14px}
+  .success p{color:var(--muted);font-size:18px;margin:0 0 8px}
+  .share{margin-top:34px;padding:26px;border-radius:20px;background:var(--panel);border:1px solid var(--line)}
+  .share h3{font-size:20px;text-transform:uppercase;margin-bottom:6px;color:var(--gold)}
+  .share .btns{display:flex;flex-wrap:wrap;gap:10px;justify-content:center;margin-top:16px}
+  #confetti{position:fixed;inset:0;pointer-events:none;z-index:95}
+
+  /* mobile sticky cta */
+  .sticky-cta{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:60;display:none;transform:translateY(130%);transition:transform .4s cubic-bezier(.2,.8,.2,1)}
+  .sticky-cta .btn{width:100%;padding:16px}
+  .sticky-cta.show{transform:none}
+  @media (max-width:760px){.sticky-cta{display:block}}
+
+  footer{padding:50px 0 110px;text-align:center;color:var(--muted);font-size:13px;border-top:1px solid var(--line)}
+
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+    .reveal{opacity:1;transform:none}
+  }
+</style>
+</head>
+<body>
+<div class="aurora"></div><div class="grain"></div>
+
+<!-- LOADING -->
+<div id="initLoader">
+  <div>
+    <div class="pulse-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M6 8h12"/></svg></div>
+    <div class="loader-text">Preparing your induction</div>
   </div>
 </div>
 
+<!-- CLOSED -->
+<div id="closedMessage" class="state-card">
+  <div class="card">
+    <h2>Registration Closed</h2>
+    <p>There are no upcoming events to sign up for at this time. Thank you for your heart to serve. Please check back soon.</p>
+  </div>
+</div>
+
+<!-- CONNECTION ERROR -->
+<div id="gatewayError" class="state-card">
+  <div class="card">
+    <h2>Connection Problem</h2>
+    <p>We couldn't load the registration right now. Please check your internet connection and try again.</p>
+    <button class="btn btn-gold" onclick="boot()">Try again</button>
+  </div>
+</div>
+
+<!-- MAIN APP -->
+<div id="mainApp">
+
+  <header class="topbar">
+    <div class="wrap">
+      <a class="brand" href="#top"><img id="navLogo" alt=""><span class="dot" id="navDot"></span><span class="name">SOUL'D OUT FOR JESUS</span></a>
+      <ol class="steps" id="steps">
+        <li><a href="#watch" data-step="watch"><b>1</b><span>Watch</span></a></li>
+        <li><a href="#learn" data-step="learn"><b>2</b><span>Learn</span></a></li>
+        <li><a href="#commit" data-step="commit"><b>3</b><span>Commit</span></a></li>
+        <li><a href="#register" data-step="register"><b>4</b><span>Register</span></a></li>
+      </ol>
+    </div>
+    <div class="progress-line" id="progressLine"></div>
+  </header>
+
+  <!-- HERO + EVENT SPOTLIGHT -->
+  <section class="hero" id="top">
+    <canvas id="particles" aria-hidden="true"></canvas>
+    <div class="wrap">
+      <div>
+        <span class="eyebrow"><span class="live-dot"></span> Now recruiting volunteers</span>
+        <h1>Be the hands<br>that bring <span class="shine">hope</span></h1>
+        <p class="lead">Join <strong>Soul'd Out for Jesus Ministries</strong> at our upcoming outreach. Watch the short induction, learn how we serve, then sign up in a few minutes.</p>
+        <div class="cta-row">
+          <a href="#watch" class="btn btn-gold"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>Start induction</a>
+          <a href="#register" class="btn btn-ghost">Register now</a>
+        </div>
+        <div class="stats">
+          <div class="stat"><b data-count="2">0</b><span>Short videos</span></div>
+          <div class="stat"><b data-count="5">0</b><span>Core values</span></div>
+          <div class="stat"><b data-count="12">0</b><span>Commitments</span></div>
+          <div class="stat" id="countStat"><b id="volCount">0</b><span>Already joined</span></div>
+          <div class="stat" id="minsStat"><b data-count="5">0</b><span>Minutes total</span></div>
+        </div>
+      </div>
+
+      <div class="spotlight">
+        <div class="spot-label"><span class="tag">The event you'll serve at</span><span class="hint">Tap to enlarge</span></div>
+        <div class="poster-frame" id="posterFrame" role="button" tabindex="0" aria-label="Enlarge event poster">
+          <img id="posterImg" alt="Event poster" style="display:none">
+          <div class="poster-placeholder" id="posterPlaceholder"><div><h3>Next Outreach</h3><p>Event details will appear here.</p></div></div>
+        </div>
+        <div class="event-meta" id="eventMeta"><span id="evName"></span><span id="evDate"></span><span id="evVenue"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1 WATCH -->
+  <section class="block" id="watch">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker"><i>1</i>Watch</div>
+        <h2>Two videos, one mission</h2>
+        <p>Start with our story, then take the 2-minute volunteer induction. It covers everything you need to know before the day.</p>
+      </div>
+      <div class="videos">
+        <article class="vcard reveal">
+          <div class="vlabel"><span class="vnum">Video 1</span><h3>Our Anniversary Video</h3></div>
+          <div class="frame" id="annivFrame">
+            <div class="thumb-fallback"></div>
+            <img class="thumb" id="annivThumb" alt="" loading="lazy">
+            <button class="play-overlay" id="annivPlay" aria-label="Play anniversary video"><span class="pbtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="ptext">Anniversary Video</span></button>
+          </div>
+          <p class="vdesc">Celebrate the journey of Soul'd Out for Jesus and the lives touched along the way.</p>
+        </article>
+
+        <article class="vcard reveal">
+          <div class="vlabel"><span class="vnum cy">Video 2</span><h3>Volunteer Induction</h3><span class="len">About 2 min</span></div>
+          <div class="frame" id="inductFrame"></div>
+          <p class="vdesc">Your briefing for the day: why we serve, how to dress and behave, privacy and safety rules, and who to ask.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 LEARN -->
+  <section class="block" id="learn">
+    <div class="wrap">
+      <div class="sec-head reveal">
+        <div class="sec-kicker"><i>2</i>Learn</div>
+        <h2>Why we serve</h2>
+        <p>Every volunteer carries the same purpose into the room.</p>
+      </div>
+
+      <div class="mv">
+        <div class="glass reveal">
+          <h3>Our Mission</h3>
+          <p>To spread hope and love through the gospel of Jesus Christ among the unheard and least valued sectors of society:</p>
+          <div class="serve-pills"><span>The poor</span><span>The oppressed</span><span>The rejected</span></div>
+          <p style="margin-top:16px">And to support them morally, emotionally and spiritually, because they too are God's children.</p>
+        </div>
+        <div class="glass reveal">
+          <h3>Our Vision</h3>
+          <p>A community of active social carers driven by the Great Commission, reaching out to, encouraging and equipping:</p>
+          <div class="serve-pills cy"><span>Youth</span><span>Young adults</span><span>Families</span></div>
+          <div class="verse">"Go ye therefore, and teach all nations..."<small>MATTHEW 28:19 (KJV)</small></div>
+        </div>
+      </div>
+
+      <div class="values reveal">
+        <div class="orbit" id="orbit">
+          <div class="orbit-ring r1"></div><div class="orbit-ring r2"></div>
+          <div class="orbit-spin" id="orbitSpin"></div>
+          <button class="orbit-core" data-i="4" id="orbitCore"><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M12 2v20M6 8h12"/></svg>Sharing<br>Jesus</span></button>
+        </div>
+        <div class="value-panel" id="valuePanel" aria-live="polite"></div>
+      </div>
+
+      <div class="timeline">
+        <div class="tl-step reveal"><div class="tl-dot" data-icon="book"></div><div><h4>Before</h4><ul><li>Register and sign below</li><li>Read the code of conduct</li><li>Plan modest, respectful clothes</li></ul></div></div>
+        <div class="tl-step reveal"><div class="tl-dot" data-icon="clock"></div><div><h4>Arrive</h4><ul><li>Be on time for your duty</li><li>Can't come? Tell the organisers early</li></ul></div></div>
+        <div class="tl-step reveal"><div class="tl-dot" data-icon="heart"></div><div><h4>Serve</h4><ul><li>Kind words, safe hands</li><li>No photos or recordings</li><li>No swapping contact details</li></ul></div></div>
+        <div class="tl-step reveal"><div class="tl-dot" data-icon="lock"></div><div><h4>After</h4><ul><li>Keep what you saw confidential</li><li>Post on social media with care</li></ul></div></div>
+      </div>
+
+      <div class="note reveal"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2a10 10 0 1 0 0 20a10 10 0 1 0 0-20M12 16v-4M12 8h.01"/></svg>
+        <p><b>You're free to serve elsewhere too.</b> No volunteer is exclusive to Soul'd Out for Jesus. You may volunteer with other organisations, as long as what you do there doesn't hold Soul'd Out accountable.</p></div>
+    </div>
+  </section>
+
+  <!-- 3 COMMIT -->
+  <section class="block" id="commit">
+    <div class="wrap">
+      <div class="commit-head">
+        <div class="sec-head reveal" style="margin:0">
+          <div class="sec-kicker"><i>3</i>Commit</div>
+          <h2>Your 12 commitments</h2>
+          <p>Read each one and tap <b>I commit</b>. All 12 unlock your registration.</p>
+        </div>
+        <div class="meter reveal" id="meter">
+          <svg viewBox="0 0 80 80" aria-hidden="true">
+            <defs><linearGradient id="meterGrad" x1="0" x2="1"><stop offset="0" stop-color="#ffcc00"/><stop offset="1" stop-color="#2ee59d"/></linearGradient></defs>
+            <circle class="bg" cx="40" cy="40" r="34"/><circle class="fg" id="meterFg" cx="40" cy="40" r="34" stroke-dasharray="213.6" stroke-dashoffset="213.6"/>
+          </svg>
+          <div><b id="meterNum">0/12</b><small>Committed</small></div>
+        </div>
+      </div>
+
+      <div class="cards" id="cards"></div>
+      <p class="commit-all-hint" id="commitHint">Tip: these come straight from our Volunteer Code of Conduct. The full text is below.</p>
+
+      <div class="quiz reveal">
+        <h3>What would you do?</h3>
+        <p>Three quick situations you might face on the day. Tap your answer.</p>
+        <div class="qgrid" id="quiz"></div>
+      </div>
+
+      <details class="fullcode" id="fullCode">
+        <summary><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/></svg>Read the complete Volunteer Code of Conduct
+          <svg class="chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg></summary>
+        <div class="code-body">
+          <h3>Objectives of the Organization</h3>
+          <strong>Mission</strong>
+          Soul'd Out for Jesus Ministries Inc. is committed:
+          <ul>
+            <li>To spread hope and love through the gospel of Jesus Christ, among the unheard and least valued sectors of the society- the poor, the oppressed and the rejected.</li>
+            <li>To support them morally, emotionally and spiritually, as we believe that they, too, are God's children.</li>
+          </ul>
+          <strong>Vision</strong>
+          Soul'd Out for Jesus Ministries Inc. envisions itself as a community of active social carers driven by the Great Commission of Jesus Christ in Matthew 28:19-20; reaching out to youth, young adults and families, encouraging them and equipping them.
+          <strong>Core Values</strong>
+          <ul>
+            <li>Molding Lives - We lead the young people of today to become resilient citizens of tomorrow.</li>
+            <li>Equipping Lives - We develop programs to equip the community to better care for those in need.</li>
+            <li>Enriching Lives - We help people find direction and purpose in life and their relationships.</li>
+            <li>Touching Lives - We extend helping hands to those who want to reach their fullest potential.</li>
+            <li>Sharing Jesus - Most especially, we share the message of Jesus' Love to all the individuals that we shall interact with.</li>
+          </ul>
+          <h3>Personal Conduct</h3>
+          <strong>Dress Code</strong>
+          Volunteers are responsible for presenting a positive example to partners, clients and the community. Volunteers shall dress appropriately in public and at work, always keeping in mind the cultural norms and practices of the community. As a rule of thumb, all volunteers should be attired modestly as far as the nature of the voluntary work allows, and refrain from clothing with offensive or objectionable material.
+          <strong>Personal and Public Communication</strong>
+          Volunteers shall exercise discretion in any personal communication regarding their assignment or other related persons and issues. Volunteers shall exercise extreme discretion in posting personal comments about projects, project partners, clients or the community on new media and social media platforms such as weblogs (or blog), podcasts, Facebook, Twitter, etc. Offensive or unwarranted negative comments may result in disciplinary action. Volunteers shall contact the organization if they require advice on such communication.
+          <strong>Personal behaviour</strong>
+          All relationships with beneficiaries shall be on a professional basis. Volunteers to avoid inappropriate physical or sexual relationships with other volunteers, staff and beneficiaries. At no time may volunteers engage in sexual activity with any beneficiaries or with a child (a person under the age of 18 regardless of the legal age of consent).
+          <strong>Unlawful Behavior</strong>
+          Soul'd Out for Jesus Ministries Inc. will not condone any conduct or pattern of behavior or any criminal behavior, which may or may not incur risk of injury, physical harm to self or others or presents a substantial possibility of loss or destruction of property. This will result in termination of the volunteers' involvement with the organization.
+          <h3>Professional Conduct</h3>
+          <strong>Collaboration and communication</strong>
+          Volunteers should maintain cordial relationships and collaborate with staff, other volunteers and beneficiaries with the highest standards of professional courtesy. Volunteers should communicate sensitively and in ways appropriate to existing cultural norms.
+          <strong>Decorum</strong>
+          Volunteers should exercise care in their language, gestures and attitudes, ensuring that they do not act in such a manner that is harmful to others. The use of abusive language or calling of offensive names or making of inappropriate remarks is strictly prohibited as is intimate or inappropriate physical contact. Volunteers must uphold respect for privacy. Volunteers should not take photos or make recordings of any kind during the volunteering session. They should not request or exchange personal details or contact information with beneficiaries. Volunteers must ensure safety to oneself and to others at all times. Volunteers must not smoke, use or be in possession, or be under the influence of alcohol or non-prescriptive drugs at any time while serving the community.
+          <strong>Conflict of Interest</strong>
+          Volunteers should avoid any personal, financial, conflict or other interests that might hinder their capability or willingness to perform their assigned duties. Volunteers are expected to avoid situations which may have conflict of interest with the organisation (e.g. other commitments, roles in other organisations). If any potential area of conflict arises, please consult with your supervisor and/or the Administration Manager.
+          <strong>Punctuality and Absenteeism</strong>
+          Volunteers are expected to perform their duties punctually and as assigned. When expecting to be absent from scheduled duty, volunteers shall inform the organizers as far in advance as possible so that alternative arrangements may be made.
+          <strong>Confidentiality</strong>
+          Volunteers are expected to maintain the confidentiality of all proprietary or privileged or personal information to which they are exposed while serving as volunteers, whether this information involves a single member of staff, volunteers, beneficiary, or other person or involving the activities of Soul'd Out for Jesus Ministries Inc.
+          <strong>Volunteer Exclusivity</strong>
+          No volunteers are designated as exclusive to Soul'd Out for Jesus Ministries Inc. or its related activities. Each volunteer has the freedom to participate based on their own choice. Therefore, any volunteer is free to engage in activities with other organizations, as long as the actions outside of Soul'd Out for Jesus Ministries Inc. do not hold the organization accountable.
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- 4 REGISTER -->
+  <section class="block" id="register">
+    <div class="wrap form-shell">
+      <aside class="form-aside reveal">
+        <div class="sec-head" style="margin:0">
+          <div class="sec-kicker"><i>4</i>Register</div>
+          <h2>Sign up to serve</h2>
+          <p>Your signed volunteer contract will be emailed to you as a PDF.</p>
+        </div>
+        <ul class="checklist" id="checklist">
+          <li data-k="commit"><i>1</i>12 commitments made</li>
+          <li data-k="details"><i>2</i>Your details filled in</li>
+          <li data-k="id"><i>3</i>Valid ID uploaded</li>
+          <li data-k="sig"><i>4</i>Signature drawn</li>
+          <li data-k="consent"><i>5</i>Agreement ticked</li>
+        </ul>
+        <div class="mini-poster" id="miniPoster"><img id="miniPosterImg" alt="Event poster"></div>
+      </aside>
+
+      <form id="regForm" novalidate>
+        <fieldset class="fgroup" data-g="about">
+          <legend><b>1</b>About you<small>All fields required</small></legend>
+          <div class="field"><input id="name" type="text" placeholder=" " autocomplete="name" enterkeyhint="next" required><label for="name">Full legal name</label><p class="help">As it appears on your ID</p></div>
+          <div class="row">
+            <div class="field always"><input id="dob" type="date" required><label for="dob">Date of birth</label></div>
+            <div class="field always"><input id="age" type="text" placeholder="Fills in automatically" readonly tabindex="-1"><label for="age">Age</label><p class="help">Worked out from your birthday</p></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fgroup" data-g="contact">
+          <legend><b>2</b>How we reach you</legend>
+          <div class="field"><input id="address" type="text" placeholder=" " autocomplete="street-address" enterkeyhint="next" required><label for="address">Complete address</label><p class="help">Street, barangay, city, province</p></div>
+          <div class="row">
+            <div class="field"><input id="email" type="email" placeholder=" " autocomplete="email" inputmode="email" enterkeyhint="next" required><label for="email">Email address</label><p class="help">Your contract PDF is sent here</p></div>
+            <div class="field"><input id="phone" type="tel" placeholder=" " autocomplete="tel" inputmode="tel" enterkeyhint="done" required><label for="phone">Mobile number</label><p class="help">e.g. +63 917 123 4567</p></div>
+          </div>
+        </fieldset>
+
+        <fieldset class="fgroup" data-g="verify">
+          <legend><b>3</b>ID and signature</legend>
+        <span class="block-label">Valid ID</span>
+        <label class="drop" id="drop">
+          <input type="file" id="idFile" accept="image/*,.pdf" required>
+          <span class="dicon" id="dropIcon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12"/></svg></span>
+          <span><b id="dropTitle">Tap to upload a photo or PDF of your ID</b><small id="dropSub">Photos are resized automatically. PDFs up to 2 MB.</small></span>
+        </label>
+
+        <span class="block-label">Digital signature</span>
+        <div class="sig-wrap" id="sigWrap">
+          <canvas id="sigCanvas" aria-label="Signature pad"></canvas>
+          <span class="sig-x">✕</span><span class="sig-line"></span>
+          <span class="sig-ph">Sign here with your finger or mouse</span>
+        </div>
+        <div class="sig-tools"><span>Your signature goes on your volunteer contract.</span><button type="button" class="link-btn" id="clearSig">Clear</button></div>
+        </fieldset>
+
+        <fieldset class="fgroup" data-g="agree">
+          <legend><b>4</b>Agree and submit</legend>
+
+        <div class="consent locked" id="consentBox">
+          <input type="checkbox" id="consent" disabled required>
+          <label for="consent">I have read the complete Volunteer Code of Conduct above. I fully understand and agree that the personal information provided will be used for program-related communication.</label>
+        </div>
+        <p class="lock-msg" id="lockMsg"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M5 11h14v10H5zM8 11V7a4 4 0 0 1 8 0v4"/></svg><span>Make all 12 commitments to unlock. <a href="#commit">Go to commitments</a></span></p>
+
+        </fieldset>
+        <button type="submit" class="btn btn-gold submit" id="submitBtn">Submit my application</button>
+        <div class="form-error" id="formError" role="alert"></div>
+        <p class="privacy">Your details and ID are only used for this program and kept confidential.</p>
+      </form>
+    </div>
+  </section>
+
+  <footer><div class="wrap">Soul'd Out for Jesus Ministries Inc. · Molding, Equipping, Enriching and Touching Lives · Sharing Jesus</div></footer>
+
+  <div class="sticky-cta" id="stickyCta"><a href="#register" class="btn btn-gold">Register to volunteer</a></div>
+</div>
+
+<div class="lightbox" id="lightbox"><img id="lightboxImg" alt="Event poster, enlarged"></div>
+
+<div class="processing" id="processing" role="status" aria-live="polite">
+  <div class="proc-card">
+    <div class="pulse-ring"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 2v20M6 8h12"/></svg></div>
+    <h3>Preparing your contract</h3>
+    <ul class="proc-steps" id="procSteps">
+      <li><i></i>Securing your details</li>
+      <li><i></i>Uploading your ID and signature</li>
+      <li><i></i>Generating your contract PDF</li>
+      <li><i></i>Emailing your copy</li>
+    </ul>
+    <p style="color:var(--muted);font-size:13px;margin-top:18px">Please keep this page open. This can take up to a minute.</p>
+  </div>
+</div>
+<canvas id="confetti"></canvas>
+
 <script>
-  function getUnblockableImageUrl(fileId) {
-    return `https://wsrv.nl/?url=https://drive.google.com/uc?id=${fileId}`;
+/* ============================================================
+   CONTENT
+   ============================================================ */
+const ICONS = {
+  heart:'<path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1-1.1a5.5 5.5 0 0 0-7.8 7.8l1 1.1L12 21l7.8-7.5 1-1.1a5.5 5.5 0 0 0 0-7.8z"/>',
+  cross:'<path d="M12 2v20M6 8h12"/>',
+  shirt:'<path d="M20.4 6.6 16 4a4 4 0 0 1-8 0L3.6 6.6a1 1 0 0 0-.5 1.2l1.2 3.4a1 1 0 0 0 1.3.6L7 11.3V20a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-8.7l1.4.5a1 1 0 0 0 1.3-.6l1.2-3.4a1 1 0 0 0-.5-1.2z"/>',
+  clock:'<path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0M12 7v5l3 2"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2M5 7a4 4 0 1 0 8 0a4 4 0 1 0-8 0M22 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>',
+  cameraOff:'<path d="M2 2l20 20M7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h14M9.5 4h5L17 7h3a2 2 0 0 1 2 2v7.5M14.1 14.1A3 3 0 1 1 9.9 9.9"/>',
+  shield:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM9 12l2 2 4-4"/>',
+  child:'<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10zM12 15.5l-2.6-2.5a1.6 1.6 0 0 1 2.3-2.3l.3.3.3-.3a1.6 1.6 0 0 1 2.3 2.3z"/>',
+  message:'<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2zM8 9h8M8 13h5"/>',
+  lock:'<path d="M5 11h14v11H5zM8 11V7a4 4 0 0 1 8 0v4"/>',
+  scale:'<path d="M12 3v18M7 21h10M5 7h14M5 7l-3 7a3 3 0 0 0 6 0zM19 7l-3 7a3 3 0 0 0 6 0z"/>',
+  smile:'<path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0M8 14s1.5 2 4 2 4-2 4-2M9 9h.01M15 9h.01"/>',
+  ban:'<path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0M4.9 4.9l14.2 14.2"/>',
+  gavel:'<path d="M14 13l-7.5 7.5a2.1 2.1 0 0 1-3-3L11 10M16 16l6-6M8 8l6-6M9 7l8 8M21 11l-8-8"/>',
+  book:'<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20V2H6.5A2.5 2.5 0 0 0 4 4.5v15zM4 19.5A2.5 2.5 0 0 0 6.5 22H20v-5"/>',
+  sparkle:'<path d="M12 3l1.9 5.1L19 10l-5.1 1.9L12 17l-1.9-5.1L5 10l5.1-1.9zM19 17l.7 1.8 1.8.7-1.8.7L19 22l-.7-1.8-1.8-.7 1.8-.7z"/>',
+  sprout:'<path d="M12 22V11M12 11C12 7 9 4 4 4c0 5 3 7 8 7zM12 13c0-4 3-7 8-7 0 5-3 7-8 7z"/>',
+  tool:'<path d="M14.7 6.3a4 4 0 0 0-5.4 5.4L3 18l3 3 6.3-6.3a4 4 0 0 0 5.4-5.4l-2.5 2.5-2.5-.5-.5-2.5z"/>',
+  compass:'<path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0M16.2 7.8l-2.1 6.3-6.3 2.1 2.1-6.3z"/>',
+  hand:'<path d="M18 11V6a2 2 0 0 0-4 0M14 10V4a2 2 0 0 0-4 0v2M10 10.5V6a2 2 0 0 0-4 0v8M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.9-6-2.4l-3.6-3.6a2 2 0 0 1 2.8-2.8L7 15"/>',
+  help:'<path d="M2 12a10 10 0 1 0 20 0a10 10 0 1 0-20 0M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3M12 17h.01"/>',
+  pen:'<path d="M12 20h9M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4z"/>',
+  check:'<path d="M20 6L9 17l-5-5"/>'
+};
+const icon = (n, w=2) => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="${w}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICONS[n]||''}</svg>`;
+
+const VALUES = [
+  {name:'Molding Lives',   short:'Molding',   icon:'sprout',  text:'We lead the young people of today to become resilient citizens of tomorrow.'},
+  {name:'Equipping Lives', short:'Equipping', icon:'tool',    text:'We develop programs to equip the community to better care for those in need.'},
+  {name:'Enriching Lives', short:'Enriching', icon:'compass', text:'We help people find direction and purpose in life and their relationships.'},
+  {name:'Touching Lives',  short:'Touching',  icon:'hand',    text:'We extend helping hands to those who want to reach their fullest potential.'},
+  {name:'Sharing Jesus',   short:'Sharing Jesus', icon:'cross', text:'Most especially, we share the message of Jesus’ love with every person we meet.'}
+];
+
+const COMMITMENTS = [
+  {t:'Dress modestly',        i:'shirt',     d:'Dress modestly and respect the culture of the community.', n:'No clothing with offensive or objectionable prints or words.'},
+  {t:'Speak with care',       i:'message',   d:'Be discreet when talking about your assignment.',           n:'No offensive or negative posts about projects, partners, clients or the community.'},
+  {t:'Keep it professional',  i:'users',     d:'Keep every relationship with beneficiaries professional.',  n:'No inappropriate physical or sexual relationships with volunteers, staff or beneficiaries.'},
+  {t:'Protect children',      i:'child',     d:'Treat everyone under 18 as a child in our care.',            n:'Never any sexual activity with a beneficiary or a child, whatever the local age of consent.'},
+  {t:'Stay lawful',           i:'gavel',     d:'Keep yourself, others and property safe from harm.',         n:'Any criminal or harmful behaviour ends your involvement with us.'},
+  {t:'Work as one team',      i:'heart',     d:'Be cordial and courteous with staff, volunteers and beneficiaries.', n:'No communication that ignores the cultural norms of those we serve.'},
+  {t:'Mind your words',       i:'smile',     d:'Take care with your language, gestures and attitude.',      n:'No abusive language, name-calling, inappropriate remarks or inappropriate contact.'},
+  {t:'Respect privacy',       i:'cameraOff', d:'Respect the privacy and dignity of everyone we serve.',     n:'No photos or recordings, and no asking for or swapping contact details with beneficiaries.'},
+  {t:'Safe and sober',        i:'ban',       d:'Keep yourself and others safe at all times.',               n:'No smoking, alcohol or non-prescribed drugs while serving.'},
+  {t:'Avoid conflicts',       i:'scale',     d:'Raise any possible conflict with your supervisor or the Administration Manager.', n:'Don’t let other interests or commitments get in the way of your duties.'},
+  {t:'Be on time',            i:'clock',     d:'Arrive punctually and do your duties as assigned.',         n:'Don’t just not show up. Tell the organisers as early as possible if you can’t come.'},
+  {t:'Keep it confidential',  i:'lock',      d:'Keep personal and private information to yourself.',        n:'Don’t share what you learn about staff, volunteers, beneficiaries or the ministry.'}
+];
+
+const QUIZ = [
+  {s:'A child you’re helping asks for your Facebook so you can stay in touch.',
+   o:['Share it, it’s harmless','Kindly say no and point them to the organisers','Give your mobile number instead'], a:1,
+   f:['Not quite. We never exchange contact details with beneficiaries.','Exactly. Kind, clear and safe for everyone.','Not quite. Phone numbers count as contact details too.']},
+  {s:'It’s a beautiful moment and you want a quick photo for your story.',
+   o:['Snap one quickly','Ask the beneficiary first','Keep the moment in your heart, no photos'], a:2,
+   f:['Not quite. No photos or recordings of any kind during the session.','Close, but the rule is no photos or recordings at all while serving.','Exactly. Privacy and dignity come first.']},
+  {s:'You wake up sick on the day and can’t make it.',
+   o:['Just don’t show up','Tell the organisers as early as you can','Quietly send a friend in your place'], a:1,
+   f:['Not quite. A no-show leaves a gap the team can’t fill.','Exactly. Early notice lets the team rearrange.','Not quite. Every volunteer must register and sign first.']}
+];
+
+const SCENES = [
+  {i:'heart',     k:'Volunteer induction', t:'Welcome, volunteer', b:'Thank you for saying yes. This short briefing covers why we serve and how we serve together.'},
+  {i:'cross',     k:'Why we serve', t:'Hope for the unheard', b:'We bring hope and love through the gospel of Jesus Christ.', c:['The poor','The oppressed','The rejected']},
+  {i:'hand',      k:'Why we serve', t:'They are God’s children too', b:'We support them morally, emotionally and spiritually.'},
+  {i:'sparkle',   k:'Our core values', t:'Five things we live by', b:'Every act of service on the day reflects these.', c:['Molding','Equipping','Enriching','Touching','Sharing Jesus']},
+  {i:'shirt',     k:'Commitment 1', t:'Dress modestly', b:'Respect local culture. No clothing with offensive prints or words.'},
+  {i:'clock',     k:'Commitment 2', t:'Be on time', b:'Can’t make it? Tell the organisers as early as you can so the team can adjust.'},
+  {i:'child',     k:'Commitment 3', t:'Keep it professional', b:'Every relationship with beneficiaries stays professional. Children are always protected.'},
+  {i:'cameraOff', k:'Commitment 4', t:'No photos. No recordings.', b:'And never ask for or swap contact details with the people we serve.'},
+  {i:'ban',       k:'Commitment 5', t:'Safe and sober', b:'No smoking, alcohol or non-prescribed drugs while serving. Keep yourself and others safe.'},
+  {i:'smile',     k:'Commitment 6', t:'Kind words only', b:'No abusive language or name-calling. Think twice before posting about the event online.'},
+  {i:'lock',      k:'Commitment 7', t:'What you see stays private', b:'Keep personal information about staff, volunteers and beneficiaries confidential.'},
+  {i:'help',      k:'Not sure?', t:'Just ask', b:'Talk to your supervisor or the Administration Manager whenever something feels unclear.'},
+  {i:'pen',       k:'Last step', t:'Ready to serve?', b:'Make your 12 commitments and sign below. See you at the outreach.', cta:true}
+];
+
+/* ============================================================
+   HELPERS
+   ============================================================ */
+const $ = s => document.querySelector(s);
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const driveImg = id => `https://wsrv.nl/?url=${encodeURIComponent('https://drive.google.com/uc?id=' + id)}`;
+const store = {
+  get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
+  set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+};
+function show(id){ ['initLoader','closedMessage','gatewayError','mainApp'].forEach(x => { document.getElementById(x).style.display = x === id ? (x === 'mainApp' ? 'block' : 'grid') : 'none'; }); }
+
+/* ============================================================
+   BOOT
+   ============================================================ */
+let appReady = false;
+async function boot(){
+  show('initLoader');
+  try{
+    const ctrl = new AbortController();
+    const timer = setTimeout(() => ctrl.abort(), 25000);
+    const res = await fetch(CONFIG.WEB_APP_URL, {signal: ctrl.signal});
+    clearTimeout(timer);
+    const data = await res.json();
+    if (data.status === 'OPEN') { show('mainApp'); if (!appReady) initApp(data); }
+    else show('closedMessage');
+  } catch(err){
+    console.error(err);
+    show('gatewayError');
   }
+}
+window.addEventListener('load', boot);
 
-  // 1. Fetch Configuration & Decoupled Images
-  window.onload = function() {
-    fetch(WEB_APP_URL)
-      .then(response => response.json())
-      .then(data => {
-        document.getElementById('initLoader').style.display = 'none';
-        
-        if (data.status === "OPEN") {
-          document.getElementById('mainApp').style.display = 'block';
-          
-          if(data.logoId) {
-            const logoEl = document.getElementById('logoImg');
-            logoEl.src = getUnblockableImageUrl(data.logoId);
-            logoEl.style.display = 'inline-block';
-          }
-          
-          if(data.posterId) {
-            document.getElementById('posterContainer').style.display = 'block';
-            document.getElementById('posterImg').src = getUnblockableImageUrl(data.posterId);
-          }
-          
-          resizeCanvas();
-        } else {
-          document.getElementById('closedMessage').style.display = 'block';
-        }
-      })
-      .catch(error => {
-        alert("Gateway Connection Failed. Verify the WEB_APP_URL is pasted correctly in the code.");
-      });
-  };
-
-  // ---------------------------------------------------------
-  // FLUID IFRAME INJECTION: Auto-Play Bypass & Form Factor Fix
-  // ---------------------------------------------------------
-  let videoStarted = false;
-
-  function triggerVideoPlay() {
-    if(videoStarted) return;
-    videoStarted = true;
-    
-    const vidContainer = document.getElementById('vidContainer');
-    if(vidContainer) {
-      // Injects native iframe equipped with responsive allowfullscreen parameters
-      vidContainer.innerHTML = '<iframe src="https://drive.google.com/file/d/1kSBYsvPtyDYBH6FIA4FQQwneZqroMfrb/preview?autoplay=1" allow="autoplay; fullscreen" allowfullscreen></iframe>';
-    }
+function initApp(data){
+  appReady = true;
+  // logo
+  if (data.logoId){ const l = $('#navLogo'); l.src = driveImg(data.logoId); l.style.display = 'block'; $('#navDot').style.display = 'none'; }
+  // event spotlight (poster from the sheet)
+  if (data.posterId){
+    const src = driveImg(data.posterId);
+    const p = $('#posterImg'); p.src = src; p.style.display = 'block'; $('#posterPlaceholder').style.display = 'none';
+    $('#lightboxImg').src = src; $('#miniPosterImg').src = src; $('#miniPoster').style.display = 'block';
   }
+  // optional event details if the Apps Script returns them
+  if (data.eventName)  $('#evName').textContent  = data.eventName;
+  if (data.eventDate)  $('#evDate').textContent  = '📅 ' + data.eventDate;
+  if (data.eventVenue) $('#evVenue').textContent = '📍 ' + data.eventVenue;
+  // optional live volunteer count
+  const c = Number(data.count);
+  if (Number.isFinite(c) && c > 0){ $('#countStat').style.display = 'block'; $('#minsStat').style.display = 'none'; $('#volCount').dataset.count = c; }
 
-  // Tripwires attached directly to user intent (click, type, interact)
-  document.body.addEventListener('click', triggerVideoPlay, { once: true });
-  document.body.addEventListener('keydown', triggerVideoPlay, { once: true });
-  document.body.addEventListener('touchstart', triggerVideoPlay, { once: true });
+  initReveal(); initCounters(); initParticles(); initPoster(); initNav();
+  initVideos(); buildOrbit(); buildTimelineIcons(); buildCommitments(); buildQuiz(); initForm();
+}
 
-  // Fallback direct click on the button itself
-  const playOverlay = document.getElementById('playBtnOverlay');
-  if(playOverlay) {
-    playOverlay.addEventListener('click', triggerVideoPlay);
-  }
-
-  // 2. Signature Canvas Matrix
-  const canvas = document.getElementById('sigCanvas');
-  const ctx = canvas.getContext('2d');
-  let drawing = false;
-
-  function resizeCanvas() {
-    if(!canvas.parentElement) return;
-    canvas.width = canvas.parentElement.getBoundingClientRect().width;
-    ctx.lineWidth = 3; ctx.lineCap = 'round'; ctx.strokeStyle = '#2d3436';
-  }
-  window.addEventListener('resize', resizeCanvas);
-
-  function getPos(e) {
-    const rect = canvas.getBoundingClientRect();
-    const clientX = e.touches ? e.touches[0].clientX : e.clientX;
-    const clientY = e.touches ? e.touches[0].clientY : e.clientY;
-    return { x: clientX - rect.left, y: clientY - rect.top };
-  }
-
-  function startPos(e) { if(e.cancelable) e.preventDefault(); drawing = true; draw(e); }
-  function endPos() { drawing = false; ctx.beginPath(); }
-  function draw(e) {
-    if (!drawing) return;
-    if(e.cancelable) e.preventDefault();
-    const pos = getPos(e);
-    ctx.lineTo(pos.x, pos.y); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(pos.x, pos.y);
-  }
-
-  canvas.addEventListener('mousedown', startPos); canvas.addEventListener('mouseup', endPos); canvas.addEventListener('mousemove', draw);
-  canvas.addEventListener('touchstart', startPos, {passive: false}); canvas.addEventListener('touchend', endPos); canvas.addEventListener('touchmove', draw, {passive: false});
-  function clearCanvas() { ctx.clearRect(0, 0, canvas.width, canvas.height); }
-
-  // 3. API Dispatcher (CORS Bypass)
-  function dispatchToServer(payload, timeOfSubmission) {
-    fetch(WEB_APP_URL, {
-      method: "POST",
-      body: JSON.stringify(payload),
-      headers: { "Content-Type": "text/plain;charset=utf-8" } 
-    })
-    .then(response => response.json())
-    .then(res => {
-      if(res.success) {
-        const elapsed = Date.now() - timeOfSubmission;
-        const timeRemaining = Math.max(0, 5000 - elapsed); 
-        
-        setTimeout(function() {
-          document.querySelector('.container').innerHTML = `
-            <div style="text-align:center; padding: 60px 20px;">
-              <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="#27ae60" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="margin-bottom: 25px;"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
-              <h2 style="color:#27ae60; font-size: 20px; font-weight: 900; line-height: 1.5; text-transform: uppercase;">Thank you for volunteering with us, a copy of your contract will be sent to your registered email, you may now close this window,, see you on the day of the event.</h2>
-            </div>`;
-        }, timeRemaining);
-      } else {
-        alert("System Error: " + res.error);
-        document.getElementById('submitBtn').disabled = false;
-        document.getElementById('submitBtn').innerText = "Submit Application";
-        document.getElementById('loader').style.display = 'none';
-      }
-    })
-    .catch(error => {
-      alert("Network Error: " + error);
-      document.getElementById('submitBtn').disabled = false;
-      document.getElementById('submitBtn').innerText = "Submit Application";
-      document.getElementById('loader').style.display = 'none';
-    });
-  }
-
-  // 4. Client-Side Image Crushing Interceptor
-  document.getElementById('regForm').addEventListener('submit', function(e) {
-    e.preventDefault(); 
-    
-    const blank = document.createElement('canvas');
-    blank.width = canvas.width; blank.height = canvas.height;
-    if (canvas.toDataURL() === blank.toDataURL()) return alert("Please draw your signature in the box provided.");
-
-    const submitBtn = document.getElementById('submitBtn');
-    submitBtn.disabled = true;
-    submitBtn.innerText = "INITIALIZING CONTRACT... PLEASE WAIT ⏳";
-    document.getElementById('loader').style.display = 'block';
-
-    const timeOfSubmission = Date.now();
-    const fileInput = document.getElementById('idFile').files[0];
-    
-    const payload = {
-      name: document.getElementById('name').value, address: document.getElementById('address').value,
-      email: document.getElementById('email').value, phone: document.getElementById('phone').value,
-      dob: document.getElementById('dob').value, age: document.getElementById('age').value,
-      consent: document.getElementById('consent').checked ? "Yes" : "No",
-      signature: canvas.toDataURL("image/png")
-    };
-
-    if (fileInput.type.startsWith('image/')) {
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        const img = new Image();
-        img.onload = function() {
-          const cvs = document.createElement('canvas');
-          const maxW = 800;
-          let w = img.width, h = img.height;
-          if(w > maxW) { h = Math.round(h * maxW / w); w = maxW; }
-          cvs.width = w; cvs.height = h;
-          cvs.getContext('2d').drawImage(img, 0, 0, w, h);
-          payload.idData = cvs.toDataURL('image/jpeg', 0.5);
-          dispatchToServer(payload, timeOfSubmission);
-        };
-        img.src = evt.target.result;
-      };
-      reader.readAsDataURL(fileInput);
-    } else {
-      if (fileInput.size > 2 * 1024 * 1024) {
-        alert("The PDF is too large (max 2MB). Please upload a smaller file or an image.");
-        submitBtn.disabled = false;
-        submitBtn.innerText = "Submit Application";
-        document.getElementById('loader').style.display = 'none';
-        return;
-      }
-      const reader = new FileReader();
-      reader.onload = function(evt) {
-        payload.idData = evt.target.result;
-        dispatchToServer(payload, timeOfSubmission);
-      };
-      reader.readAsDataURL(fileInput);
-    }
+/* ============================================================
+   REVEAL + COUNTERS + NAV
+   ============================================================ */
+function initReveal(){
+  const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } }), {threshold:.12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+}
+function initCounters(){
+  document.querySelectorAll('[data-count]').forEach(el => {
+    const target = +el.dataset.count, t0 = performance.now(), dur = 1400;
+    const step = t => { const p = Math.min(1,(t - t0)/dur); el.textContent = Math.round(target * (1 - Math.pow(1-p,3))); if (p < 1) requestAnimationFrame(step); };
+    requestAnimationFrame(step);
   });
+}
+function initNav(){
+  const ids = ['watch','learn','commit','register'];
+  const links = [...document.querySelectorAll('#steps a')];
+  const sticky = $('#stickyCta');
+  const onScroll = () => {
+    if (!document.getElementById('register')) { removeEventListener('scroll', onScroll); return; }
+    const y = scrollY + innerHeight * .35;
+    let active = null;
+    ids.forEach(id => { const s = document.getElementById(id); if (s.offsetTop <= y) active = id; });
+    links.forEach(a => { a.classList.toggle('active', a.dataset.step === active); });
+    const h = document.documentElement.scrollHeight - innerHeight;
+    $('#progressLine').style.width = (h > 0 ? scrollY / h * 100 : 0) + '%';
+    const reg = document.getElementById('register').offsetTop;
+    sticky.classList.toggle('show', scrollY > innerHeight * .8 && scrollY + innerHeight < reg + 200);
+  };
+  addEventListener('scroll', onScroll, {passive:true}); onScroll();
+}
+function markStepDone(step, done){ const a = document.querySelector(`#steps a[data-step="${step}"]`); if (a) a.classList.toggle('done', !!done); }
+
+/* ============================================================
+   PARTICLE CONSTELLATION (hero)
+   ============================================================ */
+function initParticles(){
+  const cv = $('#particles'), ctx = cv.getContext('2d');
+  let w, h, pts = [], running = true, dpr = Math.min(devicePixelRatio || 1, 2);
+  const size = () => {
+    const r = cv.getBoundingClientRect(); w = r.width; h = r.height;
+    cv.width = w * dpr; cv.height = h * dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    const n = Math.min(80, Math.floor(w * h / 14000));
+    pts = Array.from({length:n}, () => ({x:Math.random()*w, y:Math.random()*h, vx:(Math.random()-.5)*.35, vy:(Math.random()-.5)*.35, r:Math.random()*1.8+.6, g:Math.random() < .25}));
+  };
+  const draw = () => {
+    ctx.clearRect(0,0,w,h);
+    for (let i=0;i<pts.length;i++){
+      const p = pts[i];
+      if (!reduceMotion){ p.x += p.vx; p.y += p.vy; if (p.x<0||p.x>w) p.vx*=-1; if (p.y<0||p.y>h) p.vy*=-1; }
+      for (let j=i+1;j<pts.length;j++){
+        const q = pts[j], dx = p.x-q.x, dy = p.y-q.y, d = dx*dx+dy*dy;
+        if (d < 14000){ ctx.strokeStyle = `rgba(255,204,0,${.18*(1-d/14000)})`; ctx.lineWidth = 1; ctx.beginPath(); ctx.moveTo(p.x,p.y); ctx.lineTo(q.x,q.y); ctx.stroke(); }
+      }
+      ctx.fillStyle = p.g ? 'rgba(51,204,255,.9)' : 'rgba(255,224,140,.85)';
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,7); ctx.fill();
+    }
+    if (running && !reduceMotion) requestAnimationFrame(draw);
+  };
+  size(); draw();
+  addEventListener('resize', () => { size(); if (reduceMotion) draw(); });
+  new IntersectionObserver(([e]) => { const was = running; running = e.isIntersecting; if (running && !was) draw(); }).observe(cv);
+}
+
+/* ============================================================
+   POSTER: tilt + lightbox
+   ============================================================ */
+function initPoster(){
+  const f = $('#posterFrame'), lb = $('#lightbox');
+  const open = () => { if ($('#posterImg').style.display !== 'none') lb.classList.add('open'); };
+  f.addEventListener('click', open);
+  f.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); open(); } });
+  lb.addEventListener('click', () => lb.classList.remove('open'));
+  addEventListener('keydown', e => { if (e.key === 'Escape') lb.classList.remove('open'); });
+  if (!reduceMotion && matchMedia('(hover:hover)').matches){
+    f.addEventListener('mousemove', e => { const r = f.getBoundingClientRect(); const x = (e.clientX - r.left)/r.width - .5, y = (e.clientY - r.top)/r.height - .5; f.style.transform = `rotateY(${x*10}deg) rotateX(${-y*10}deg)`; });
+    f.addEventListener('mouseleave', () => f.style.transform = '');
+  }
+}
+
+/* ============================================================
+   VIDEOS
+   ============================================================ */
+function driveIframe(id){ return `<iframe src="https://drive.google.com/file/d/${id}/preview" allow="autoplay; fullscreen" allowfullscreen title="Video player"></iframe>`; }
+function initVideos(){
+  // Video 1: anniversary (Drive)
+  const th = $('#annivThumb');
+  th.src = `https://drive.google.com/thumbnail?id=${CONFIG.ANNIVERSARY_VIDEO_ID}&sz=w1280`;
+  th.onerror = () => th.remove();
+  $('#annivPlay').addEventListener('click', () => { $('#annivFrame').innerHTML = driveIframe(CONFIG.ANNIVERSARY_VIDEO_ID); story && story.pause(); });
+
+  // Video 2: induction (Drive file if set, otherwise built-in animated induction)
+  const f = $('#inductFrame');
+  if (CONFIG.INDUCTION_VIDEO_ID){
+    f.innerHTML = `<div class="thumb-fallback"></div><button class="play-overlay" aria-label="Play induction video"><span class="pbtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="ptext">Volunteer Induction</span></button>`;
+    f.querySelector('button').addEventListener('click', () => { f.innerHTML = driveIframe(CONFIG.INDUCTION_VIDEO_ID); markStepDone('watch', true); });
+  } else {
+    story = new StoryPlayer(f, SCENES);
+  }
+}
+
+/* ---------- Built-in animated induction ---------- */
+let story = null;
+class StoryPlayer {
+  constructor(root, scenes){
+    this.root = root; this.scenes = scenes; this.i = 0; this.elapsed = 0; this.playing = false; this.started = false; this.last = 0;
+    root.innerHTML = `
+      <div class="story paused" tabindex="0" aria-roledescription="slideshow" aria-label="Volunteer induction">
+        <div class="story-bars">${scenes.map(() => '<div><i></i></div>').join('')}</div>
+        <div class="story-stage"><div class="story-icon"><span class="halo"></span><span class="core"></span></div><div class="story-text" aria-live="polite"></div></div>
+        <button class="story-tap l" aria-label="Previous"></button><button class="story-tap r" aria-label="Next"></button>
+        <div class="story-controls">
+          <button data-a="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M15 18l-6-6 6-6"/></svg></button>
+          <button data-a="toggle" aria-label="Play or pause"></button>
+          <button data-a="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M9 18l6-6-6-6"/></svg></button>
+          <span class="count"></span>
+        </div>
+        <button class="play-overlay" aria-label="Play volunteer induction"><span class="pbtn"><svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg></span><span class="ptext">Volunteer Induction</span></button>
+      </div>`;
+    this.el = root.querySelector('.story');
+    this.bars = [...root.querySelectorAll('.story-bars i')];
+    this.iconCore = root.querySelector('.core'); this.text = root.querySelector('.story-text');
+    this.toggleBtn = root.querySelector('[data-a=toggle]'); this.count = root.querySelector('.count');
+    this.overlay = root.querySelector('.play-overlay');
+    this.overlay.addEventListener('click', () => { this.overlay.remove(); this.started = true; this.go(0); this.play(); });
+    root.querySelector('[data-a=prev]').onclick = () => this.go(this.i - 1);
+    root.querySelector('[data-a=next]').onclick = () => this.go(this.i + 1);
+    root.querySelector('.story-tap.l').onclick = () => this.go(this.i - 1);
+    root.querySelector('.story-tap.r').onclick = () => this.go(this.i + 1);
+    this.toggleBtn.onclick = () => this.playing ? this.pause() : (this.i === this.scenes.length - 1 && this.elapsed >= this.dur() ? (this.go(0), this.play()) : this.play());
+    this.el.addEventListener('keydown', e => { if (e.key === 'ArrowRight') this.go(this.i+1); if (e.key === 'ArrowLeft') this.go(this.i-1); if (e.key === ' '){ e.preventDefault(); this.toggleBtn.click(); } });
+    // pause when scrolled away or tab hidden
+    new IntersectionObserver(([e]) => { if (!e.isIntersecting && this.playing) this.pause(true); else if (e.isIntersecting && this.autoPaused) this.play(); }, {threshold:.35}).observe(this.el);
+    document.addEventListener('visibilitychange', () => { if (document.hidden && this.playing) this.pause(true); });
+    this.render(0); this.updateToggle();
+  }
+  dur(i = this.i){ const s = this.scenes[i]; const words = (s.t + ' ' + s.b).split(/\s+/).length + (s.c ? s.c.length * 2 : 0); return Math.max(5200, 2400 + words * 260) + (s.cta ? 2500 : 0); }
+  render(i){
+    const s = this.scenes[i];
+    this.el.style.setProperty('--h', [350,8,340,40,355,20,330,190,0,45,345,200,40][i % 13]);
+    this.iconCore.innerHTML = icon(s.i, 1.8);
+    this.iconCore.style.animation = 'none'; void this.iconCore.offsetWidth; this.iconCore.style.animation = '';
+    const words = s.t.split(' ').map((w,j) => `<span style="animation-delay:${j*90}ms">${w}</span>`).join(' ');
+    const chips = s.c ? `<div class="story-chips">${s.c.map((c,j) => `<span style="animation-delay:${600 + j*180}ms">${c}</span>`).join('')}</div>` : '';
+    const cta = s.cta ? `<a href="#commit" class="btn btn-gold story-cta" style="opacity:0;animation:fadeUp .6s 1s forwards">Make my commitments</a>` : '';
+    this.text.innerHTML = `<div class="story-kicker">${s.k}</div><h3 class="story-title">${words}</h3><p class="story-body" style="animation-delay:${s.t.split(' ').length*90 + 200}ms">${s.b}</p>${chips}${cta}`;
+    this.count.textContent = `${i+1} / ${this.scenes.length}`;
+    this.bars.forEach((b,j) => b.style.width = j < i ? '100%' : '0%');
+  }
+  go(i){
+    if (!this.started){ this.overlay.remove(); this.started = true; }
+    this.i = Math.max(0, Math.min(this.scenes.length - 1, i)); this.elapsed = 0; this.render(this.i);
+    if (!this.playing) this.play();
+  }
+  play(){
+    if (!this.started) return;
+    this.playing = true; this.autoPaused = false; this.el.classList.remove('paused'); this.last = performance.now(); this.updateToggle();
+    cancelAnimationFrame(this.raf); this.raf = requestAnimationFrame(t => this.tick(t));
+  }
+  pause(auto){ this.playing = false; this.autoPaused = !!auto; this.el.classList.add('paused'); cancelAnimationFrame(this.raf); this.updateToggle(); }
+  tick(t){
+    if (!this.playing) return;
+    this.elapsed += t - this.last; this.last = t;
+    const d = this.dur(), p = Math.min(1, this.elapsed / d);
+    this.bars[this.i].style.width = (p*100) + '%';
+    if (p >= 1){
+      if (this.i < this.scenes.length - 1){ this.i++; this.elapsed = 0; this.render(this.i); }
+      else { this.pause(); markStepDone('watch', true); return; }
+    }
+    if (this.i === this.scenes.length - 1) markStepDone('watch', true);
+    this.raf = requestAnimationFrame(tt => this.tick(tt));
+  }
+  updateToggle(){
+    const ended = this.i === this.scenes.length - 1 && this.elapsed >= this.dur();
+    this.toggleBtn.innerHTML = this.playing
+      ? '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M6 4h4v16H6zM14 4h4v16h-4z"/></svg>'
+      : ended ? '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M3 12a9 9 0 1 0 3-6.7L3 8M3 3v5h5"/></svg>'
+              : '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>';
+  }
+}
+
+/* ============================================================
+   CORE VALUES ORBIT
+   ============================================================ */
+function buildOrbit(){
+  const spin = $('#orbitSpin'), orbit = $('#orbit'), core = $('#orbitCore'), panel = $('#valuePanel');
+  VALUES.slice(0,4).forEach((v,i) => {
+    const b = document.createElement('button');
+    b.className = 'orbit-node'; b.dataset.i = i; b.style.setProperty('--a', (i*90 - 90) + 'deg');
+    b.innerHTML = `<span><em>${icon(v.icon)}${v.short}</em></span>`;
+    b.setAttribute('aria-label', v.name);
+    spin.appendChild(b);
+  });
+  panel.innerHTML = `<div class="vp-anim"></div><div class="vp-dots">${VALUES.map((v,i) => `<button aria-label="${v.name}" data-i="${i}"></button>`).join('')}</div>`;
+  let cur = -1, timer, holdT;
+  const set = i => {
+    cur = i; const v = VALUES[i];
+    orbit.querySelectorAll('.orbit-node').forEach(n => n.classList.toggle('active', +n.dataset.i === i));
+    core.classList.toggle('active', i === 4);
+    const box = panel.querySelector('.vp-anim');
+    box.outerHTML = `<div class="vp-anim"><div class="vp-k">Core value ${i+1} of 5</div><h3>${v.name}</h3><p>${v.text}</p></div>`;
+    panel.querySelectorAll('.vp-dots button').forEach(d => d.classList.toggle('on', +d.dataset.i === i));
+  };
+  const auto = () => { clearInterval(timer); timer = setInterval(() => set((cur + 1) % 5), 3600); };
+  const pick = i => { set(i); orbit.classList.add('hold'); clearInterval(timer); clearTimeout(holdT); holdT = setTimeout(() => { orbit.classList.remove('hold'); auto(); }, 9000); };
+  orbit.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) pick(+b.dataset.i); });
+  panel.addEventListener('click', e => { const b = e.target.closest('[data-i]'); if (b) pick(+b.dataset.i); });
+  set(0); auto();
+  new IntersectionObserver(([e]) => { if (e.isIntersecting) markStepDone('learn', true); }, {threshold:.6}).observe(orbit);
+}
+function buildTimelineIcons(){ document.querySelectorAll('.tl-dot').forEach(d => d.innerHTML = icon(d.dataset.icon)); }
+
+/* ============================================================
+   COMMITMENTS
+   ============================================================ */
+let committed = new Set(store.get('sofj_commit') || []);
+function buildCommitments(){
+  const wrap = $('#cards');
+  wrap.innerHTML = COMMITMENTS.map((c,i) => `
+    <article class="ccard reveal${committed.has(i) ? ' done' : ''}" data-i="${i}" style="--c:${['#ffcc00','#33ccff','#ff6b8b','#2ee59d','#ff9f43','#b18cff'][i % 6]}">
+      <span class="num">${String(i+1).padStart(2,'0')}</span>
+      <span class="ci">${icon(c.i)}</span>
+      <h4>${c.t}</h4>
+      <p class="do">${c.d}</p>
+      <p class="dont">${c.n}</p>
+      <button type="button" class="commit-btn" aria-pressed="${committed.has(i)}">${committed.has(i) ? icon('check',3) + ' Committed' : 'I commit'}</button>
+    </article>`).join('');
+  wrap.querySelectorAll('.reveal').forEach(el => { new IntersectionObserver(([e],o) => { if (e.isIntersecting){ el.classList.add('in'); o.disconnect(); } }, {threshold:.1}).observe(el); });
+  wrap.addEventListener('click', e => {
+    const btn = e.target.closest('.commit-btn'); if (!btn) return;
+    const card = btn.closest('.ccard'), i = +card.dataset.i;
+    if (committed.has(i)) committed.delete(i); else { committed.add(i); card.classList.remove('pop'); void card.offsetWidth; card.classList.add('pop'); }
+    const on = committed.has(i);
+    card.classList.toggle('done', on); btn.setAttribute('aria-pressed', on);
+    btn.innerHTML = on ? icon('check',3) + ' Committed' : 'I commit';
+    store.set('sofj_commit', [...committed]);
+    updateCommit(true);
+  });
+  updateCommit(false);
+}
+function updateCommit(fromClick){
+  const n = committed.size, total = COMMITMENTS.length, full = n === total;
+  $('#meterNum').textContent = `${n}/${total}`;
+  $('#meterFg').style.strokeDashoffset = 213.6 * (1 - n/total);
+  $('#meter').classList.toggle('full', full);
+  $('#commitHint').innerHTML = full ? '<b style="color:var(--ok)">All 12 commitments made. Registration unlocked.</b> <a href="#register">Continue to register</a>' : `${total - n} to go. These come straight from our Volunteer Code of Conduct. The full text is below.`;
+  markStepDone('commit', full);
+  const box = $('#consentBox'), cb = $('#consent');
+  cb.disabled = !full; box.classList.toggle('locked', !full); $('#lockMsg').style.display = full ? 'none' : 'flex';
+  if (!full) cb.checked = false;
+  if (full && fromClick){ burstConfetti(80); }
+  updateChecklist();
+}
+
+/* ============================================================
+   QUIZ
+   ============================================================ */
+function buildQuiz(){
+  $('#quiz').innerHTML = QUIZ.map((q,qi) => `
+    <div class="q" data-q="${qi}"><p class="qs"><small>Situation ${qi+1}</small>${q.s}</p>
+      ${q.o.map((o,oi) => `<button type="button" class="opt" data-o="${oi}">${o}</button>`).join('')}
+      <p class="fb" aria-live="polite"></p></div>`).join('');
+  $('#quiz').addEventListener('click', e => {
+    const b = e.target.closest('.opt'); if (!b) return;
+    const box = b.closest('.q'), q = QUIZ[+box.dataset.q], o = +b.dataset.o;
+    box.querySelectorAll('.opt').forEach(x => x.classList.remove('right','wrong'));
+    b.classList.add(o === q.a ? 'right' : 'wrong');
+    if (o !== q.a) box.querySelector(`[data-o="${q.a}"]`).classList.add('right');
+    box.querySelector('.fb').textContent = q.f[o];
+  });
+}
+
+/* ============================================================
+   FORM: signature, ID upload, validation, submit
+   ============================================================ */
+const sig = {strokes:[], cur:null, w:0};
+function initForm(){
+  // DOB -> age
+  const dob = $('#dob'), age = $('#age');
+  dob.max = new Date().toISOString().slice(0,10);
+  const calcAge = () => {
+    if (!dob.value){ age.value = ''; return; }
+    const d = new Date(dob.value + 'T00:00:00'), n = new Date();
+    let a = n.getFullYear() - d.getFullYear(); const m = n.getMonth() - d.getMonth();
+    if (m < 0 || (m === 0 && n.getDate() < d.getDate())) a--;
+    age.value = a >= 0 && a < 120 ? a : '';
+    validateField('dob'); updateChecklist();
+  };
+  dob.addEventListener('change', calcAge); dob.addEventListener('input', calcAge); dob.addEventListener('blur', calcAge);
+  // Enter jumps to the next field instead of submitting
+  const order = ['name','dob','address','email','phone'];
+  order.forEach((id,i) => $('#'+id).addEventListener('keydown', e => {
+    if (e.key !== 'Enter') return; e.preventDefault();
+    validateField(id);
+    const nxt = order[i+1]; if (nxt) $('#'+nxt).focus(); else { $('#idFile').closest('.drop').scrollIntoView({behavior:'smooth', block:'center'}); $('#phone').blur(); }
+  }));
+  order.forEach(id => $('#'+id).addEventListener('blur', () => validateField(id)));
+  ['name','address','email','phone'].forEach(id => $('#'+id).addEventListener('input', () => { const f = $('#'+id).parentElement; if (f.classList.contains('invalid') || f.classList.contains('valid')) validateField(id); updateChecklist(); }));
+  $('#consent').addEventListener('change', updateChecklist);
+
+  // ID file
+  const drop = $('#drop'), fi = $('#idFile');
+  ['dragenter','dragover'].forEach(ev => drop.addEventListener(ev, e => { e.preventDefault(); drop.classList.add('drag'); }));
+  ['dragleave','drop'].forEach(ev => drop.addEventListener(ev, () => drop.classList.remove('drag')));
+  drop.addEventListener('drop', e => { e.preventDefault(); if (e.dataTransfer.files[0]){ fi.files = e.dataTransfer.files; fi.dispatchEvent(new Event('change')); } });
+  fi.addEventListener('change', () => {
+    const f = fi.files[0], ic = $('#dropIcon');
+    if (!f){ drop.classList.remove('has'); return; }
+    if (f.type === 'application/pdf' && f.size > 2*1024*1024){ fi.value = ''; showError('That PDF is over 2 MB. Please upload a smaller PDF or a photo of your ID instead.'); drop.classList.remove('has'); updateChecklist(); return; }
+    hideError();
+    drop.classList.add('has');
+    $('#dropTitle').textContent = f.name;
+    $('#dropSub').textContent = (f.size/1024/1024).toFixed(2) + ' MB · tap to change';
+    if (f.type.startsWith('image/')){ const u = URL.createObjectURL(f); ic.innerHTML = `<img src="${u}" alt="">`; }
+    else ic.innerHTML = icon('book');
+    updateChecklist();
+  });
+
+  // signature pad (high-DPI, keeps strokes on resize)
+  const cv = $('#sigCanvas'), ctx = cv.getContext('2d');
+  const size = () => {
+    const r = cv.getBoundingClientRect(); if (!r.width || r.width === sig.w) return;
+    sig.w = r.width; const dpr = Math.min(devicePixelRatio || 1, 3);
+    cv.width = Math.round(r.width * dpr); cv.height = Math.round(r.height * dpr);
+    ctx.setTransform(dpr,0,0,dpr,0,0); redraw(ctx);
+  };
+  const pos = e => { const r = cv.getBoundingClientRect(); return {x:e.clientX - r.left, y:e.clientY - r.top}; };
+  cv.addEventListener('pointerdown', e => { e.preventDefault(); cv.setPointerCapture(e.pointerId); sig.cur = [pos(e)]; sig.strokes.push(sig.cur); $('#sigWrap').classList.add('inked'); redraw(ctx); });
+  cv.addEventListener('pointermove', e => { if (!sig.cur) return; e.preventDefault(); sig.cur.push(pos(e)); redraw(ctx); });
+  const end = () => { if (sig.cur){ sig.cur = null; $('#sigWrap').classList.toggle('inked', hasInk()); updateChecklist(); } };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end); cv.addEventListener('pointerleave', end);
+  $('#clearSig').addEventListener('click', () => { sig.strokes = []; redraw(ctx); $('#sigWrap').classList.remove('inked'); updateChecklist(); });
+  size(); addEventListener('resize', size);
+  new ResizeObserver(size).observe(cv);
+
+  $('#regForm').addEventListener('submit', onSubmit);
+  updateChecklist();
+}
+function hasInk(){ return sig.strokes.length > 0; }
+function drawStrokes(ctx, scale = 1){
+  ctx.lineCap = 'round'; ctx.lineJoin = 'round'; ctx.strokeStyle = '#141b3a'; ctx.fillStyle = '#141b3a'; ctx.lineWidth = 2.6 * scale;
+  sig.strokes.forEach(s => {
+    if (s.length === 1){ ctx.beginPath(); ctx.arc(s[0].x*scale, s[0].y*scale, 1.4*scale, 0, 7); ctx.fill(); return; }
+    ctx.beginPath(); ctx.moveTo(s[0].x*scale, s[0].y*scale);
+    for (let i=1;i<s.length-1;i++){ const mx = (s[i].x + s[i+1].x)/2, my = (s[i].y + s[i+1].y)/2; ctx.quadraticCurveTo(s[i].x*scale, s[i].y*scale, mx*scale, my*scale); }
+    const l = s[s.length-1]; ctx.lineTo(l.x*scale, l.y*scale); ctx.stroke();
+  });
+}
+function redraw(ctx){ const cv = ctx.canvas; ctx.save(); ctx.setTransform(1,0,0,1,0,0); ctx.clearRect(0,0,cv.width,cv.height); ctx.restore(); drawStrokes(ctx); }
+function signatureDataURL(){
+  const cv = $('#sigCanvas'), r = cv.getBoundingClientRect(), k = 2;
+  const out = document.createElement('canvas'); out.width = Math.round(r.width * k); out.height = Math.round(r.height * k);
+  drawStrokes(out.getContext('2d'), k); return out.toDataURL('image/png');
+}
+
+const RULES = {
+  name:    v => v.length > 1 || 'Please enter your full legal name.',
+  dob:     v => (!!v && $('#age').value !== '') || 'Please enter a valid date of birth.',
+  address: v => v.length > 3 || 'Please enter your complete address.',
+  email:   v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v) || 'Please check your email address.',
+  phone:   v => v.replace(/\D/g,'').length >= 7 || 'Please enter a valid mobile number.'
+};
+const HELP = {};
+function validateField(id){
+  const el = $('#'+id), f = el.parentElement, help = f.querySelector('.help'), r = RULES[id](el.value.trim());
+  if (help && !(id in HELP)) HELP[id] = help.textContent;
+  if (!el.value.trim() && !f.classList.contains('invalid')){ f.classList.remove('valid'); return false; }
+  f.classList.toggle('valid', r === true); f.classList.toggle('invalid', r !== true);
+  if (help) help.textContent = r === true ? HELP[id] : r;
+  return r === true;
+}
+function detailsOk(){
+  const v = id => $('#'+id).value.trim();
+  return v('name').length > 1 && v('address').length > 3 && /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v('email')) && v('phone').replace(/\D/g,'').length >= 7 && !!v('dob') && $('#age').value !== '';
+}
+function updateChecklist(){
+  const st = {commit: committed.size === COMMITMENTS.length, details: detailsOk(), id: !!($('#idFile').files||[])[0], sig: hasInk(), consent: $('#consent').checked};
+  document.querySelectorAll('#checklist li').forEach((li,i) => { const ok = st[li.dataset.k]; li.classList.toggle('ok', ok); li.querySelector('i').textContent = ok ? '✓' : i+1; });
+  const okId = id => RULES[id]($('#'+id).value.trim()) === true;
+  const g = {about: okId('name') && okId('dob'), contact: okId('address') && okId('email') && okId('phone'), verify: st.id && st.sig, agree: st.consent};
+  document.querySelectorAll('.fgroup').forEach(fs => fs.classList.toggle('complete', !!g[fs.dataset.g]));
+  markStepDone('register', Object.values(st).every(Boolean));
+  return st;
+}
+function showError(msg){ const e = $('#formError'); e.textContent = msg; e.style.display = 'block'; }
+function hideError(){ $('#formError').style.display = 'none'; }
+
+let submitting = false;
+async function onSubmit(e){
+  e.preventDefault(); if (submitting) return; hideError();
+  const st = updateChecklist();
+  if (!st.commit){ showError('Please make all 12 commitments first.'); document.getElementById('commit').scrollIntoView(); return; }
+  for (const id of ['name','dob','address','email','phone']){
+    const el = $('#'+id), r = RULES[id](el.value.trim());
+    if (r !== true){ el.parentElement.classList.add('invalid'); validateField(id); el.focus(); el.scrollIntoView({behavior:'smooth', block:'center'}); showError(r); return; }
+  }
+  if (!st.id){ showError('Please upload a photo or PDF of a valid ID.'); return; }
+  if (!st.sig){ showError('Please draw your signature in the box.'); return; }
+  if (!st.consent){ showError('Please tick the agreement box to continue.'); return; }
+
+  submitting = true; $('#submitBtn').disabled = true;
+  openProcessing();
+  const t0 = Date.now();
+  const payload = {
+    name: $('#name').value.trim(), address: $('#address').value.trim(),
+    email: $('#email').value.trim(), phone: $('#phone').value.trim(),
+    dob: $('#dob').value, age: $('#age').value,
+    consent: $('#consent').checked ? 'Yes' : 'No',
+    signature: signatureDataURL()
+  };
+  try{
+    procStep(1);
+    payload.idData = await readId($('#idFile').files[0]);
+    procStep(2);
+    const res = await fetch(CONFIG.WEB_APP_URL, {method:'POST', body: JSON.stringify(payload), headers:{'Content-Type':'text/plain;charset=utf-8'}});
+    procStep(3);
+    const out = await res.json();
+    if (!out.success) throw new Error(out.error || 'The server could not save your registration.');
+    procStep(4);
+    await new Promise(r => setTimeout(r, Math.max(600, 4500 - (Date.now() - t0))));
+    store.set('sofj_commit', []);
+    showSuccess(payload);
+  } catch(err){
+    console.error(err);
+    closeProcessing(); submitting = false; $('#submitBtn').disabled = false;
+    showError('Something went wrong: ' + (err.message || err) + ' Please check your connection and try again.');
+  }
+}
+function readId(file){
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onerror = () => reject(new Error('Could not read your ID file.'));
+    if (file.type.startsWith('image/')){
+      reader.onload = ev => {
+        const img = new Image();
+        img.onload = () => {
+          const maxW = 1200; let w = img.width, h = img.height;
+          if (w > maxW){ h = Math.round(h * maxW / w); w = maxW; }
+          const c = document.createElement('canvas'); c.width = w; c.height = h;
+          const cx = c.getContext('2d'); cx.fillStyle = '#fff'; cx.fillRect(0,0,w,h); cx.drawImage(img,0,0,w,h);
+          resolve(c.toDataURL('image/jpeg', .72));
+        };
+        img.onerror = () => reject(new Error('That image format could not be opened. Please upload a JPG or PNG photo of your ID.'));
+        img.src = ev.target.result;
+      };
+    } else {
+      reader.onload = ev => resolve(ev.target.result);
+    }
+    reader.readAsDataURL(file);
+  });
+}
+
+/* processing overlay */
+function openProcessing(){ $('#processing').classList.add('open'); procStep(0); }
+function closeProcessing(){ $('#processing').classList.remove('open'); }
+function procStep(n){
+  document.querySelectorAll('#procSteps li').forEach((li,i) => { li.classList.toggle('ok', i < n); li.classList.toggle('now', i === n); li.querySelector('i').textContent = i < n ? '✓' : ''; });
+}
+
+/* success */
+function showSuccess(p){
+  closeProcessing();
+  const first = (p.name.split(' ')[0] || 'friend');
+  const url = location.href.split('#')[0];
+  const app = $('#mainApp');
+  app.innerHTML = `
+    <section class="success"><div class="card">
+      <div class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6L9 17l-5-5"/></svg></div>
+      <h2>You're in, <span id="sName"></span>!</h2>
+      <p>Thank you for volunteering with us. A copy of your signed contract will be sent to <b id="sEmail" style="color:var(--text)"></b>.</p>
+      <p>You may now close this window. See you on the day of the event.</p>
+      <div class="share">
+        <h3>Bring a friend to serve</h3>
+        <p style="font-size:15px">Outreaches need many hands. Invite someone with a heart to help.</p>
+        <div class="btns">
+          <button class="btn btn-gold" id="shNative">Share invite</button>
+          <a class="btn btn-ghost" target="_blank" rel="noopener" href="https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(url)}">Facebook</a>
+          <button class="btn btn-ghost" id="shCopy">Copy link</button>
+        </div>
+      </div>
+    </div></section>`;
+  $('#sName').textContent = first; $('#sEmail').textContent = p.email;
+  scrollTo(0,0); burstConfetti(220);
+  const msg = 'I just signed up to volunteer with Soul’d Out for Jesus. Join me at the next outreach!';
+  $('#shNative').onclick = async () => { if (navigator.share){ try{ await navigator.share({title:'Volunteer with Soul’d Out for Jesus', text:msg, url}); }catch(e){} } else $('#shCopy').click(); };
+  $('#shCopy').onclick = async () => { try{ await navigator.clipboard.writeText(msg + ' ' + url); $('#shCopy').textContent = 'Link copied'; }catch(e){ prompt('Copy this link:', url); } };
+}
+
+/* confetti */
+function burstConfetti(n){
+  if (reduceMotion) return;
+  const cv = $('#confetti'), ctx = cv.getContext('2d'); cv.width = innerWidth; cv.height = innerHeight;
+  const colors = ['#ffcc00','#ffe27a','#33ccff','#c1121f','#2ee59d','#ffffff'];
+  const ps = Array.from({length:n}, () => ({x:innerWidth/2 + (Math.random()-.5)*120, y:innerHeight*.45, vx:(Math.random()-.5)*14, vy:-Math.random()*14-4, s:Math.random()*7+4, r:Math.random()*6, vr:(Math.random()-.5)*.3, c:colors[Math.random()*colors.length|0]}));
+  let f = 0;
+  (function loop(){
+    ctx.clearRect(0,0,cv.width,cv.height);
+    ps.forEach(p => { p.vy += .35; p.vx *= .99; p.x += p.vx; p.y += p.vy; p.r += p.vr; ctx.save(); ctx.translate(p.x,p.y); ctx.rotate(p.r); ctx.fillStyle = p.c; ctx.fillRect(-p.s/2,-p.s/4,p.s,p.s/2); ctx.restore(); });
+    if (++f < 170) requestAnimationFrame(loop); else ctx.clearRect(0,0,cv.width,cv.height);
+  })();
+}
 </script>
 </body>
 </html>
