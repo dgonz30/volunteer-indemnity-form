@@ -850,7 +850,8 @@ const SCENES = [
    ============================================================ */
 const $ = s => document.querySelector(s);
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
-const driveImg = id => `https://wsrv.nl/?url=${encodeURIComponent('https://drive.google.com/uc?id=' + id)}`;
+const driveImg = id => `https://lh3.googleusercontent.com/d/${id}=w2000`; // served by Google Drive; backup proxy below
+document.addEventListener('error', e => { const el = e.target, m = el && el.tagName === 'IMG' && (el.src || '').match(/lh3\.googleusercontent\.com\/d\/([\w-]+)=w2000/); if (m) el.src = `https://wsrv.nl/?url=${encodeURIComponent('https://drive.google.com/uc?id=' + m[1])}`; }, true);
 const store = {
   get(k){ try{ return JSON.parse(localStorage.getItem(k)); }catch(e){ return null; } },
   set(k,v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
