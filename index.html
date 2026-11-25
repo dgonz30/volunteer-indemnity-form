@@ -302,7 +302,8 @@
   .ccard:hover{transform:translateY(-4px)}
   .ccard .ci{width:50px;height:50px;border-radius:15px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 14%,#fff);color:var(--c)}
   .ccard .ci svg{width:26px;height:26px}
-  .ccard .num{position:absolute;top:20px;right:20px;font-family:var(--display);font-weight:900;font-size:36px;color:#f1e6da}
+  .ccard .num{position:absolute;top:16px;right:18px;font-family:var(--display);font-weight:900;font-size:44px;line-height:1;background:linear-gradient(135deg,var(--c) 15%,#ffb300 100%);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 3px 6px color-mix(in srgb,var(--c) 30%,transparent))}
+  .ccard.done .num{background:linear-gradient(135deg,var(--ok),#2fd48f);-webkit-background-clip:text;background-clip:text}
   .ccard h4{font-size:20px;text-transform:uppercase;color:var(--text)}
   .ccard .do,.ccard .dont{display:flex;gap:10px;font-size:16.5px;line-height:1.5;margin:0}
   .ccard .do::before,.ccard .dont::before{flex:none;display:grid;place-items:center;width:24px;height:24px;border-radius:7px;font-size:13px;font-weight:900;margin-top:2px}
